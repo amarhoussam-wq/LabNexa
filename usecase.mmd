@@ -1,0 +1,76 @@
+flowchart LR
+    %% Actors (الفاعلون)
+    Patient((المريض\nPatient))
+    Doctor((الطبيب\nDoctor))
+    Admin((مدير النظام\nAdmin))
+    Sys((النظام الآلي\nSystem Automations))
+
+    %% System Boundary
+    subgraph Labo_dz[نظام إدارة المختبر الطبية - Labo_dz]
+        direction TB
+        
+        %% Patient Use Cases
+        UC1([تسجيل الدخول وإدارة الحساب])
+        UC2([طلب حجز تحليل طبي])
+        UC3([الإجابة على أسئلة الأهلية والتشخيص])
+        UC4([متابعة الحجوزات ورؤية النتائج])
+
+        %% Doctor Use Cases
+        UC5([إدارة مواعيد المرضى])
+        UC6([إدخال وتسجيل نتائج التحاليل])
+        UC7([استعراض إجابات المريض الطبية])
+        UC8([إرسال رسائل وتوجيهات للمريض])
+
+        %% Admin Use Cases
+        UC9([إدارة حسابات المستخدمين])
+        UC10([إدارة وتأكيد طلبات الحجز])
+        UC11([إدارة التحاليل وقواعد النظام])
+        UC12([تعديل الإعدادات العامة للمختبر])
+        UC13([مراقبة سجل التدقيق Audit Log])
+
+        %% System Automations Use Cases
+        UC14([التحقق الآلي من تعارض المواعيد])
+        UC15([إرسال التذكيرات الآلية])
+        UC16([التسجيل التلقائي للحركات الأمنية])
+    end
+
+    %% Patient Links
+    Patient ===> UC1
+    Patient ===> UC2
+    Patient ===> UC3
+    Patient ===> UC4
+
+    %% Doctor Links
+    Doctor ===> UC1
+    Doctor ===> UC5
+    Doctor ===> UC6
+    Doctor ===> UC7
+    Doctor ===> UC8
+
+    %% Admin Links
+    Admin ===> UC1
+    Admin ===> UC9
+    Admin ===> UC10
+    Admin ===> UC11
+    Admin ===> UC12
+    Admin ===> UC13
+
+    %% System Links
+    Sys -.-> UC14
+    Sys -.-> UC15
+    Sys -.-> UC16
+
+    %% Include / Extend relationships
+    UC2 -. "يستدعي\n<<include>>" .-> UC14
+    UC10 -. "يُفَعِّل\n<<trigger>>" .-> UC15
+    UC6 -. "يسجل في\n<<include>>" .-> UC16
+    UC9 -. "يسجل في\n<<include>>" .-> UC16
+    UC11 -. "يسجل في\n<<include>>" .-> UC16
+
+    %% Styling for better looking
+    style Patient fill:#d4edda,stroke:#28a745,stroke-width:2px,color:#155724
+    style Doctor fill:#cce5ff,stroke:#007bff,stroke-width:2px,color:#004085
+    style Admin fill:#f8d7da,stroke:#dc3545,stroke-width:2px,color:#721c24
+    style Sys fill:#e2e3e5,stroke:#6c757d,stroke-width:2px,color:#383d41
+    
+    style Labo_dz fill:#fdfdfd,stroke:#333,stroke-width:2px,stroke-dasharray: 5 5

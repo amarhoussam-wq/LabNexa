@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: labo_dz_app
+    restart: unless-stopped
+    working_dir: /var/www
+    volumes:
+      - ./:/app
+      - storage_data:/app/storage/app
+    networks:
+      - labo_dz_network
+
+  nginx:
+    image: nginx:alpine
+    container_name: labo_dz_nginx
+    restart: unless-stopped
+    ports:
+      - "8000:80"
+    volumes:
+      - ./:/app
+      - docker/nginx:/etc/nginx/conf.d
+    networks:
+      - labo_dz_network
+    depends_on:
+      - app
+
+volumes:
+  storage_data:
+
+
+networks:
+  labo_dz_network:
+    external: true
+    name: coolify

@@ -1,0 +1,117 @@
+flowchart LR
+    %% Actors
+    Patient((المريض))
+    Doctor((الطبيب المحلل))
+    Admin((مدير النظام))
+
+    %% System Boundary
+    subgraph Labo_dz [نظام إدارة مختبر التحاليل الطبية]
+        direction TB
+        
+        %% Admin UCs
+        ManageUsers([إدارة المستخدمين])
+        AddUser([إضافة مستخدمين])
+        BanUser([تفعيل وإيقاف مستخدمين])
+        FilterUser([تصفية وبحث مستخدمين])
+        
+        ManageAnalysis([إدارة بيانات التحاليل])
+        AddAnalysis([إنشاء تحاليل])
+        AddRules([إدارة قواعد الأهلية])
+        
+        Audit([مراقبة سجل الحركات])
+        ExportAudit([تصدير بصيغة CSV])
+        
+        ConfirmRes([إدارة الحجوزات])
+        AcceptRes([تأكيد والحجز])
+        RejectRes([إلغاء الحجز])
+
+        %% Doctor UCs
+        ManageAppt([إدارة المواعيد السريرية])
+        EnterRes([إدخال النتائج المخبرية])
+        ViewAns([الاطلاع على إجابات المريض])
+        SendMsg([إرسال توجيهات طبية])
+
+        %% Patient UCs
+        ReqRes([طلب حجز موعد تحليل])
+        CheckConflicts([التحقق من تعارض المواعيد])
+        AnswerQ([الإجابة على أسئلة الأهلية])
+        ViewHistory([الاطلاع على النتائج وسجل المريض])
+        DownloadPdf([تحميل النتيجة PDF])
+
+        %% Auth Use Case
+        Auth([تسجيل الدخول - S'authentifier])
+    end
+
+    %% Styles for Actors
+    style Patient fill:transparent,stroke:none,color:#000,font-size:16px,font-weight:bold
+    style Doctor fill:transparent,stroke:none,color:#000,font-size:16px,font-weight:bold
+    style Admin fill:transparent,stroke:none,color:#000,font-size:16px,font-weight:bold
+
+    %% Styles for Main UCs (Blue)
+    style ManageUsers fill:#bde0fe,stroke:#4a90e2,stroke-width:2px,color:#000
+    style ManageAnalysis fill:#bde0fe,stroke:#4a90e2,stroke-width:2px,color:#000
+    style Audit fill:#bde0fe,stroke:#4a90e2,stroke-width:2px,color:#000
+    style ConfirmRes fill:#bde0fe,stroke:#4a90e2,stroke-width:2px,color:#000
+    style ManageAppt fill:#bde0fe,stroke:#4a90e2,stroke-width:2px,color:#000
+    style EnterRes fill:#bde0fe,stroke:#4a90e2,stroke-width:2px,color:#000
+    style ViewAns fill:#bde0fe,stroke:#4a90e2,stroke-width:2px,color:#000
+    style SendMsg fill:#bde0fe,stroke:#4a90e2,stroke-width:2px,color:#000
+    style ReqRes fill:#bde0fe,stroke:#4a90e2,stroke-width:2px,color:#000
+    style AnswerQ fill:#bde0fe,stroke:#4a90e2,stroke-width:2px,color:#000
+    style ViewHistory fill:#bde0fe,stroke:#4a90e2,stroke-width:2px,color:#000
+    style Auth fill:#bde0fe,stroke:#4a90e2,stroke-width:2px,color:#000
+
+    %% Styles for Sub UCs (Purple)
+    style AddUser fill:#e0c3fc,stroke:#b185db,stroke-width:2px,color:#000
+    style BanUser fill:#e0c3fc,stroke:#b185db,stroke-width:2px,color:#000
+    style AddAnalysis fill:#e0c3fc,stroke:#b185db,stroke-width:2px,color:#000
+    style AddRules fill:#e0c3fc,stroke:#b185db,stroke-width:2px,color:#000
+    style AcceptRes fill:#e0c3fc,stroke:#b185db,stroke-width:2px,color:#000
+    style RejectRes fill:#e0c3fc,stroke:#b185db,stroke-width:2px,color:#000
+
+    %% Styles for Ext UCs (Pink)
+    style FilterUser fill:#ffc8dd,stroke:#ffafcc,stroke-width:2px,color:#000
+    style ExportAudit fill:#ffc8dd,stroke:#ffafcc,stroke-width:2px,color:#000
+    style CheckConflicts fill:#ffc8dd,stroke:#ffafcc,stroke-width:2px,color:#000
+    style DownloadPdf fill:#ffc8dd,stroke:#ffafcc,stroke-width:2px,color:#000
+
+    %% System Boundary Style
+    style Labo_dz fill:#ffffff,stroke:#333,stroke-width:2px,color:#000
+
+    %% Links Base
+    Admin --> ManageUsers
+    Admin --> ManageAnalysis
+    Admin --> Audit
+    Admin --> ConfirmRes
+
+    Doctor --> ManageAppt
+    Doctor --> EnterRes
+    Doctor --> ViewAns
+    Doctor --> SendMsg
+
+    Patient --> ReqRes
+    Patient --> AnswerQ
+    Patient --> ViewHistory
+
+    %% Hierarchy Links
+    AddUser --> ManageUsers
+    BanUser --> ManageUsers
+    AddAnalysis --> ManageAnalysis
+    AddRules --> ManageAnalysis
+    AcceptRes --> ConfirmRes
+    RejectRes --> ConfirmRes
+
+    %% Extend Links
+    ManageUsers -. "extend" .-> FilterUser
+    Audit -. "extend" .-> ExportAudit
+    ReqRes -. "extend" .-> CheckConflicts
+    ViewHistory -. "extend" .-> DownloadPdf
+
+    %% Include Links
+    ManageUsers -. "include" .-> Auth
+    ManageAnalysis -. "include" .-> Auth
+    Audit -. "include" .-> Auth
+    ConfirmRes -. "include" .-> Auth
+    ManageAppt -. "include" .-> Auth
+    ReqRes -. "include" .-> Auth
+    ViewHistory -. "include" .-> Auth

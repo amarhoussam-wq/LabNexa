@@ -1,0 +1,40 @@
+<svg width="250" height="250" viewBox="0 0 250 250" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Sophisticated Deep Blue to Vibrant Cyan Gradient -->
+    <linearGradient id="mainGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e293b;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0ea5e9;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Secondary Bio-Accent Gradient (Emerging Green) -->
+    <linearGradient id="accentGradient" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#10b981;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#34d399;stop-opacity:1" />
+    </linearGradient>
+
+    <!-- Subtle Drop Shadow for Premium Feel -->
+    <filter id="premiumShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000" flood-opacity="0.1" />
+    </filter>
+  </defs>
+
+  <!-- The "Precision Helix" Icon Component -->
+  <g filter="url(#premiumShadow)">
+    <!-- Base geometric structure (Circle representing Unity and Cells) -->
+    <circle cx="125" cy="110" r="80" fill="#ffffff" />
+    
+    <!-- Stylized 'L' and 'D' and 'Z' abstraction -->
+    <!-- The abstract cross / helix link -->
+    <path d="M100,70 L100,150 L150,150" fill="none" stroke="url(#mainGradient)" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" />
+    
+    <!-- The "Precision Pulse" - A dynamic line through the center -->
+    <path d="M70,110 Q100,50 130,110 T190,110" fill="none" stroke="url(#accentGradient)" stroke-width="8" stroke-linecap="round" />
+    
+    <!-- The "Diagnostic Dot" - Symbolic of pinpoint accuracy -->
+    <circle cx="150" cy="70" r="12" fill="url(#mainGradient)" />
+  </g>
+
+  <!-- High-End Typography (Clean, Minimalist) -->
+  <text x="125" y="210" font-family="'Outfit', 'Inter', sans-serif" font-size="32" font-weight="800" fill="#1e293b" text-anchor="middle" letter-spacing="2">LABO<tspan fill="#0ea5e9">.DZ</tspan></text>
+  <text x="125" y="235" font-family="'Tajawal', sans-serif" font-size="12" font-weight="600" fill="#64748b" text-anchor="middle" letter-spacing="4">PRECISION DIAGNOSTICS</text>
+</svg>

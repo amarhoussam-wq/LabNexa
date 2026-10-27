@@ -1,0 +1,94 @@
+flowchart LR
+    %% Styles matching the provided image
+    classDef actor fill:transparent,stroke:none,color:#000,font-size:15px,font-weight:bold
+    classDef mainUC fill:#bde0fe,stroke:#4a90e2,stroke-width:2px,color:#000,font-size:15px
+    classDef subUC fill:#e0c3fc,stroke:#b185db,stroke-width:2px,color:#000,font-size:15px
+    classDef extUC fill:#ffc8dd,stroke:#ffafcc,stroke-width:2px,color:#000,font-size:15px
+
+    %% Actors on the left
+    subgraph Actors [ ]
+        direction TB
+        Admin(["🧑‍💼 مدير النظام"]):::actor
+        Doctor(["👨‍⚕️ الطبيب المحلل"]):::actor
+        Patient(["🤒 المريض"]):::actor
+        
+        %% visual hierarchy lines (invisible to keep layout but no errors)
+        Admin ~~~ Doctor
+        Doctor ~~~ Patient
+    end
+    style Actors fill:transparent,stroke:none
+
+    %% System Boundary
+    subgraph System [نظام Labo_dz - إدارة مختبر التحاليل الطبية]
+        direction TB
+        
+        %% Admin UCs
+        ManageUsers(["إدارة المستخدمين"]):::mainUC
+        AddUser(["إضافة / تعديل / حذف مستخدمين"]):::subUC
+        BanUser(["تفعيل / إيقاف مستخدمين"]):::subUC
+        AddUser --> ManageUsers
+        BanUser --> ManageUsers
+        FilterUser(["تصفية وبحث"]):::extUC
+        ManageUsers -. extend .-> FilterUser
+
+        ManageAnalysis(["إدارة بيانات التحاليل"]):::mainUC
+        AddAnalysis(["إنشاء / تعديل تحاليل"]):::subUC
+        AddRules(["إدارة قواعد الأهلية"]):::subUC
+        AddAnalysis --> ManageAnalysis
+        AddRules --> ManageAnalysis
+
+        Audit(["مراقبة سجل الحركات"]):::mainUC
+        ExportAudit(["تصدير بصيغة CSV"]):::extUC
+        Audit -. extend .-> ExportAudit
+
+        ConfirmRes(["قبول / رفض الحجوزات"]):::mainUC
+        AcceptRes(["تأكيد الحجز"]):::subUC
+        RejectRes(["إلغاء الحجز"]):::subUC
+        AcceptRes --> ConfirmRes
+        RejectRes --> ConfirmRes
+
+        %% Doctor UCs
+        ManageAppt(["إدارة المواعيد السريرية"]):::mainUC
+        EnterRes(["إدخال النتائج المخبرية"]):::mainUC
+        ViewAns(["الاطلاع على إجابات المريض"]):::mainUC
+        SendMsg(["إرسال توجيهات طبية"]):::mainUC
+
+        %% Patient UCs
+        ReqRes(["طلب حجز موعد تحليل"]):::mainUC
+        CheckConflicts(["التحقق من تعارض المواعيد"]):::extUC
+        ReqRes -. extend .-> CheckConflicts
+
+        AnswerQ(["الإجابة على أسئلة الأهلية"]):::mainUC
+        
+        ViewHistory(["الاطلاع على النتائج وسجل المريض"]):::mainUC
+        DownloadPdf(["تحميل النتيجة PDF"]):::extUC
+        ViewHistory -. extend .-> DownloadPdf
+
+        %% Auth Use Case on the right
+        Auth(["تسجيل الدخول / المصادقة"]):::mainUC
+    end
+    style System fill:#ffffff,stroke:#333,stroke-width:2px,color:#000
+
+    %% Links from Actors
+    Admin --> ManageUsers
+    Admin --> ManageAnalysis
+    Admin --> Audit
+    Admin --> ConfirmRes
+
+    Doctor --> ManageAppt
+    Doctor --> EnterRes
+    Doctor --> ViewAns
+    Doctor --> SendMsg
+
+    Patient --> ReqRes
+    Patient --> AnswerQ
+    Patient --> ViewHistory
+
+    %% Includes Auth (Pointing all to Auth like in image)
+    ManageUsers -. include .-> Auth
+    ManageAnalysis -. include .-> Auth
+    Audit -. include .-> Auth
+    ConfirmRes -. include .-> Auth
+    ManageAppt -. include .-> Auth
+    ReqRes -. include .-> Auth
+    ViewHistory -. include .-> Auth

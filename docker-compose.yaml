@@ -1,0 +1,68 @@
+services:
+    zsw8k8c4k8o4kw008skssgkc-175654706399:
+        image: 'zsw8k8c4k8o4kw008skssgkc:174ddd904eec8db9228b96db73a8b4e26850d884'
+        container_name: zsw8k8c4k8o4kw008skssgkc-175654706399
+        restart: unless-stopped
+        expose:
+            - '80'
+        networks:
+            coolify:
+                aliases:
+                    - zsw8k8c4k8o4kw008skssgkc-175654706399
+        mem_limit: '0'
+        memswap_limit: '0'
+        mem_swappiness: 60
+        mem_reservation: '0'
+        cpus: 0.0
+        cpu_shares: 1024
+        env_file:
+            - .env
+        healthcheck:
+            test:
+                - CMD-SHELL
+                - 'curl -s -X GET -f http://localhost:80/ > /dev/null || wget -q -O- http://localhost:80/ > /dev/null || exit 1'
+            interval: 30s
+            timeout: 10s
+            retries: 3
+            start_period: 5s
+        labels:
+            - traefik.enable=true
+            - traefik.http.middlewares.gzip.compress=true
+            - traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https
+            - traefik.http.routers.http-0-zsw8k8c4k8o4kw008skssgkc.entryPoints=http
+            - traefik.http.routers.http-0-zsw8k8c4k8o4kw008skssgkc.middlewares=redirect-to-https
+            - 'traefik.http.routers.http-0-zsw8k8c4k8o4kw008skssgkc.rule=Host(`zsw8k8c4k8o4kw008skssgkc.194.34.232.105.sslip.io`) && PathPrefix(`/`)'
+            - traefik.http.routers.http-0-zsw8k8c4k8o4kw008skssgkc.service=http-0-zsw8k8c4k8o4kw008skssgkc
+            - traefik.http.routers.https-0-zsw8k8c4k8o4kw008skssgkc.entryPoints=https
+            - traefik.http.routers.https-0-zsw8k8c4k8o4kw008skssgkc.middlewares=gzip
+            - 'traefik.http.routers.https-0-zsw8k8c4k8o4kw008skssgkc.rule=Host(`zsw8k8c4k8o4kw008skssgkc.194.34.232.105.sslip.io`) && PathPrefix(`/`)'
+            - traefik.http.routers.https-0-zsw8k8c4k8o4kw008skssgkc.service=https-0-zsw8k8c4k8o4kw008skssgkc
+            - traefik.http.routers.https-0-zsw8k8c4k8o4kw008skssgkc.tls.certresolver=letsencrypt
+            - traefik.http.routers.https-0-zsw8k8c4k8o4kw008skssgkc.tls=true
+            - traefik.http.services.http-0-zsw8k8c4k8o4kw008skssgkc.loadbalancer.server.port=80
+            - traefik.http.services.https-0-zsw8k8c4k8o4kw008skssgkc.loadbalancer.server.port=80
+            - 'caddy_0.encode=zstd gzip'
+            - 'caddy_0.handle_path.0_reverse_proxy={{upstreams 80}}'
+            - 'caddy_0.handle_path=/*'
+            - caddy_0.header=-Server
+            - 'caddy_0.try_files={path} /index.html /index.php'
+            - 'caddy_0=https://zsw8k8c4k8o4kw008skssgkc.194.34.232.105.sslip.io'
+            - caddy_ingress_network=coolify
+            - coolify.managed=true
+            - coolify.version=4.0.0-beta.463
+            - coolify.applicationId=2
+            - coolify.type=application
+            - coolify.name=zsw8k8c4k8o4kw008skssgkc
+            - coolify.resourceName=laravel-app2
+            - coolify.projectName=labo-dz
+            - coolify.serviceName=laravel-app2
+            - coolify.environmentName=production
+            - coolify.pullRequestId=0
+        volumes:
+            - '/data/labo-storage:/app/storage/app/public'
+            - '/data/coolify/applications/zsw8k8c4k8o4kw008skssgkc/storage/app/public:/storage/app/public'
+networks:
+    coolify:
+        external: true
+        name: coolify
+        attachable: true
