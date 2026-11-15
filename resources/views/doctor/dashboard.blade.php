@@ -544,12 +544,12 @@
                                             <i class="fas fa-eye"></i> <span>{{ __('messages.view_details') ?? 'Détails' }}</span>
                                         </a>
 
-                                        <!-- Eligibility Report -->
-                                        <a href="{{ route('doctor.eligibility.report', $res->id) }}" target="_blank" class="action-pill-btn secondary" title="{{ __('messages.eligibility_report') }}">
+                                        <!-- Eligibility Report — same tab so back button works -->
+                                        <a href="{{ route('doctor.eligibility.report', $res->id) }}" class="action-pill-btn secondary" title="{{ __('messages.eligibility_report') }}">
                                             <i class="fas fa-file-medical"></i> <span>{{ __('messages.view_report') }}</span>
                                         </a>
 
-                                        <!-- PDF Results -->
+                                        <!-- Results -->
                                         @php
                                             $hasDbResults = $res->reservationAnalyses->contains(fn($ra) => !empty($ra->result_value));
                                         @endphp
@@ -559,7 +559,7 @@
                                                 <i class="fas fa-file-pdf"></i> <span>{{ __('messages.view_result') }}</span>
                                             </a>
                                         @elseif($hasDbResults)
-                                            <a href="{{ route('report.view', ['id' => $res->id, 'type' => 'confirmed', 'report_type' => 'results']) }}" target="_blank" class="action-pill-btn emerald">
+                                            <a href="{{ route('report.view', ['id' => $res->id, 'type' => 'confirmed', 'report_type' => 'results']) }}" class="action-pill-btn emerald">
                                                 <i class="fas fa-microscope"></i> <span>{{ app()->getLocale() == 'ar' ? 'تقرير النتائج' : 'Résultats' }}</span>
                                             </a>
                                         @endif

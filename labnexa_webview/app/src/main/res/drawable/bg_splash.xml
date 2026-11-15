@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Gradient splash background — LabNexa brand colours (#0052CC → #0D9488)
+    No PNG image needed; this is pure XML = 0 KB overhead.
+-->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <gradient
+        android:type="linear"
+        android:angle="135"
+        android:startColor="#0052CC"
+        android:centerColor="#0066FF"
+        android:endColor="#0D9488" />
+</shape>

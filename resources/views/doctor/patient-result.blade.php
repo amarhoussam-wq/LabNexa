@@ -114,7 +114,7 @@
     <div class="result-container container">
         
         <div class="mb-4">
-            <a href="{{ route('doctor.dashboard') }}" class="text-decoration-none text-muted">
+            <a onclick="smartGoBack(); return false;" href="{{ route('doctor.dashboard') }}" class="text-decoration-none text-muted">
                 <i class="fas fa-chevron-{{ app()->getLocale() == 'ar' ? 'right' : 'left' }} me-2"></i> {{ __('messages.back_to_dashboard') }}
             </a>
         </div>
@@ -314,6 +314,12 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        function smartGoBack() {
+            if (window.opener && !window.opener.closed) { window.close(); return; }
+            if (window.history.length > 1) { window.history.back(); return; }
+            window.location.href = "{{ route('doctor.dashboard') }}";
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             const aiBtn = document.getElementById('generate-ai-btn');
             const aiCard = document.getElementById('ai-insight-card');

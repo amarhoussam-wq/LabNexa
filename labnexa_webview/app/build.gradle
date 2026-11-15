@@ -1,0 +1,46 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'dz.labnexa.app'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "dz.labnexa.app"
+        minSdk 21
+        targetSdk 34
+        versionCode 2
+        versionName "1.2.0"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.debug   // replace with real keystore for production
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    // Only build arm64-v8a for modern phones → smaller APK
+    splits {
+        abi {
+            enable true
+            reset()
+            include 'arm64-v8a', 'armeabi-v7a'
+            universalApk false
+        }
+    }
+}
+
+dependencies {
+    // No Flutter engine. Pure Android WebView.
+    // Only 1 lightweight dependency: SwipeRefreshLayout (~40 KB)
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
+}

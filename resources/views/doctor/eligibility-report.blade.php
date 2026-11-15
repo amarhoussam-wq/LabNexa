@@ -140,8 +140,7 @@
 
     <div class="report-container container">
         
-        <div class="d-flex justify-content-between align-items-center mb-2">
-            <a href="{{ route('doctor.dashboard') }}" class="btn-back">
+        <div class="d-flex justify-content-between align-items-center mb-2">            <a onclick="smartGoBack(); return false;" href="{{ route('doctor.dashboard') }}" class="btn-back">
                 <i class="fas fa-arrow-{{ app()->getLocale() == 'ar' ? 'right' : 'left' }}"></i> {{ __('messages.back_to_dashboard') }}
             </a>
             
@@ -274,4 +273,11 @@
     </div>
 
 </body>
+<script>
+    function smartGoBack() {
+        if (window.opener && !window.opener.closed) { window.close(); return; }
+        if (window.history.length > 1) { window.history.back(); return; }
+        window.location.href = "{{ route('doctor.dashboard') }}";
+    }
+</script>
 </html>

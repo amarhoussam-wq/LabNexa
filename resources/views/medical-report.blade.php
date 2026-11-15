@@ -422,7 +422,7 @@
                 <i class="fas fa-print"></i>
                 <span>{{ app()->getLocale() == 'ar' ? 'طباعة / حفظ كـ PDF' : 'Imprimer / Sauvegarder PDF' }}</span>
             </button>
-            <button onclick="window.history.back()" class="btn-back">
+            <button onclick="smartGoBack()" class="btn-back">
                 <i class="fas fa-arrow-left"></i>
                 <span>{{ app()->getLocale() == 'ar' ? 'رجوع' : 'Retour' }}</span>
             </button>
@@ -652,5 +652,37 @@
 
     </div>
 
+
+<script>
+    function smartGoBack() {
+        // If page was opened in a new tab/window (via target="_blank")
+        if (window.opener && !window.opener.closed) {
+            window.close();
+            return;
+        }
+        // If there is a referrer from the same domain (navigated within the site)
+        if (document.referrer && document.referrer !== window.location.href) {
+            var refHost = new URL(document.referrer).hostname;
+            var curHost = window.location.hostname;
+            if (refHost === curHost) {
+                window.location.href = document.referrer;
+                return;
+            }
+        }
+        // If the browser has history
+        if (window.history.length > 1) {
+            window.history.back();
+            return;
+        }
+        // Final fallback: go to doctor dashboard if logged in as doctor, else patient, else home
+        @auth('doctor')
+            window.location.href = "{{ route('doctor.dashboard') }}";
+        @elseauth('patient')
+            window.location.href = "{{ route('patient.dashboard') }}";
+        @else
+            window.location.href = "{{ route('home') }}";
+        @endauth
+    }
+</script>
 </body>
 </html>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    ic_splash_logo.xml — vector LabNexa icon (white microscope on transparent)
+    Replace this file with your actual logo PNG/SVG if you have one.
+    Using a vector means 0 extra PNGs and virtually 0 KB disk usage.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="150dp"
+    android:height="150dp"
+    android:viewportWidth="100"
+    android:viewportHeight="100">
+
+    <!-- Outer circle -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:alpha="0.15"
+        android:pathData="M50,50 m-48,0 a48,48 0 1,0 96,0 a48,48 0 1,0 -96,0"/>
+
+    <!-- Microscope body -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M38,70 L62,70 L62,65 L55,65 L55,52 Q60,48 60,42 Q60,30 50,30 Q40,30 40,42 Q40,48 45,52 L45,65 L38,65 Z"/>
+
+    <!-- Eyepiece top -->
+    <rect
+        android:fillColor="#FFFFFF"
+        android:left="46"
+        android:top="22"
+        android:right="54"
+        android:bottom="31"/>
+
+    <!-- Stage platform -->
+    <rect
+        android:fillColor="#FFFFFF"
+        android:left="35"
+        android:top="70"
+        android:right="65"
+        android:bottom="74"/>
+
+    <!-- Base -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M32,74 Q50,80 68,74 L68,78 Q50,85 32,78 Z"/>
+
+    <!-- Lens circle highlight -->
+    <path
+        android:fillColor="#0066FF"
+        android:pathData="M50,42 m-7,0 a7,7 0 1,0 14,0 a7,7 0 1,0 -14,0"/>
+
+</vector>

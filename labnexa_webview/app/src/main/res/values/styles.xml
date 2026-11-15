@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Base app theme -->
+    <style name="Theme.LabNexa" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:colorPrimary">#0066FF</item>
+        <item name="android:colorPrimaryDark">#0052CC</item>
+        <item name="android:colorAccent">#10B981</item>
+        <item name="android:windowBackground">@android:color/white</item>
+        <!-- Make status bar match our brand blue -->
+        <item name="android:statusBarColor">#0052CC</item>
+        <item name="android:windowLightStatusBar">false</item>
+    </style>
+
+    <!-- Splash theme — solid blue background while layout inflates -->
+    <style name="Theme.LabNexa.Splash" parent="Theme.LabNexa">
+        <item name="android:windowBackground">@drawable/bg_splash</item>
+        <item name="android:windowFullscreen">true</item>
+    </style>
+
+</resources>
