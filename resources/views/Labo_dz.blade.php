@@ -1691,7 +1691,7 @@
                 </button>
 
                 <!-- App Download Pill -->
-                <a href="{{ url('/labnexa_v1.1.4.apk') }}" class="btn-app-pill">
+                <a href="{{ url('/labnexa_lite.apk') }}" download="LabNexa.apk" class="btn-app-pill">
                     <i class="fab fa-android text-emerald"></i>
                     <span>3MB App</span>
                 </a>
@@ -2079,7 +2079,7 @@
                             : 'Application ultra-rapide de 3MB. Prise de rendez-vous et consultation des résultats en temps réel.'
                         }}
                     </p>
-                    <a href="{{ url('/labnexa_v1.1.4.apk') }}" class="btn-app-pill" style="border:none; background:var(--primary); color:#fff; width:100%; justify-content:center;">
+                    <a href="{{ url('/labnexa_lite.apk') }}" download="LabNexa.apk" class="btn-app-pill" style="border:none; background:var(--primary); color:#fff; width:100%; justify-content:center;">
                         <i class="fas fa-download"></i> {{ app()->getLocale() == 'ar' ? 'تحميل APK (3MB)' : 'Télécharger l\'APK' }}
                     </a>
                 </div>
@@ -2396,7 +2396,7 @@
                         <li><a href="{{ route('access', ['tab' => 'patient']) }}">{{ __('messages.patient_portal') }}</a></li>
                         <li><a href="{{ route('access', ['tab' => 'doctor']) }}">{{ __('messages.physician_portal') }}</a></li>
                         <li><a href="{{ route('access', ['tab' => 'admin']) }}">{{ __('messages.admin_panel') }}</a></li>
-                        <li><a href="{{ url('/labnexa_v1.1.4.apk') }}"><i class="fab fa-android text-emerald"></i> App Android (3MB)</a></li>
+                        <li><a href="{{ url('/labnexa_lite.apk') }}" download="LabNexa.apk"><i class="fab fa-android text-emerald"></i> App Android (3MB)</a></li>
                     </ul>
                 </div>
 

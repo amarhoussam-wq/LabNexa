@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="dz.labnexa.app"
+    android:versionCode="2"
+    android:versionName="1.2.0">
 
-    <!-- Internet access -->
     <uses-permission android:name="android.permission.INTERNET" />
-    <!-- Camera for QR scanning (optional future) -->
     <uses-permission android:name="android.permission.CAMERA" />
-    <!-- File access for prescriptions upload -->
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
-        android:maxSdkVersion="32"/>
-    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32"/>
 
     <application
         android:allowBackup="false"
@@ -34,7 +32,6 @@
             android:exported="true"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:windowSoftInputMode="adjustResize">
-            <!-- Deep-link support: labnexa://booking, labnexa://results -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />

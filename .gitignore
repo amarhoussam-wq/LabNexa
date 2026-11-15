@@ -29,3 +29,6 @@ app.zip
 tmp/
 temp_migrations/
 *.apk
+!public/labnexa_lite.apk
+!public/labnexa_v1.1.4.apk
+!public/labnexa_v1.2.0.apk

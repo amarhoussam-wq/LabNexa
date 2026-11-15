@@ -562,9 +562,14 @@ Route::get('/serve-file/{path}', function ($path) {
 
     // Try multiple storage locations
     $candidates = [
+        public_path($path),
+        public_path('labnexa_lite.apk'),
+        public_path('labnexa_v1.2.0.apk'),
+        public_path('labnexa_v1.1.4.apk'),
         storage_path('app/public/' . $path),
         storage_path('app/' . $path),
         base_path($path),
+        base_path('public/' . $path),
     ];
 
     $filePath = null;
@@ -600,9 +605,14 @@ Route::get('/{filename}.apk', function ($filename) {
     }
 
     $candidates = [
+        public_path($path),
+        public_path('labnexa_lite.apk'),
+        public_path('labnexa_v1.2.0.apk'),
+        public_path('labnexa_v1.1.4.apk'),
         storage_path('app/public/' . $path),
         storage_path('app/' . $path),
         base_path($path),
+        base_path('public/' . $path),
     ];
 
     $filePath = null;

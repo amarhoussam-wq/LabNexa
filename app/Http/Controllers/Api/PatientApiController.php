@@ -436,9 +436,9 @@ class PatientApiController extends Controller
     public function getLatestVersion(Request $request)
     {
         return response()->json([
-            'version' => '1.1.4',
-            'download_url' => $this->getFullUrl($request, 'labnexa_v1.1.4.apk'),
-            'release_notes' => "تحديث الهوية البصرية: تم تطبيق الشعار الجديد LABNEXA في جميع واجهات النظام وتطبيق الموبايل.",
+            'version' => '1.2.0',
+            'download_url' => $this->getFullUrl($request, 'labnexa_lite.apk'),
+            'release_notes' => "تحديث التطبيق الخفيف v1.2.0: حجم فائق الخفة (1.3 MB) وسرعة استجابة مذهلة مع حجز المواعيد واستعراض النتائج الرقمية فورياً.",
             'force_update' => false
         ]);
     }
