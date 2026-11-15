@@ -7,6 +7,7 @@ import android.net.http.SslError;
 import android.view.View;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebResourceRequest;
+import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -50,6 +51,16 @@ public class LabWebViewClient extends WebViewClient {
                 + "<button onclick='window.location.reload()'>إعادة المحاولة</button>"
                 + "</body></html>";
             view.loadData(html, "text/html; charset=utf-8", "utf-8");
+        }
+    }
+
+    @Override
+    public void onReceivedHttpError(WebView view, WebResourceRequest req, WebResourceResponse res) {
+        if (req != null && req.isForMainFrame() && res != null && res.getStatusCode() == 404) {
+            String url = req.getUrl() != null ? req.getUrl().toString() : "";
+            if (url.contains("/app")) {
+                view.loadUrl(MainActivity.BASE_URL);
+            }
         }
     }
 
