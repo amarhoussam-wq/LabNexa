@@ -35,25 +35,37 @@
             --emerald: #10B981;
             --emerald-light: #ECFDF5;
             --emerald-glow: rgba(16, 185, 129, 0.3);
+            --indigo: #6366F1;
+            --indigo-light: #EEF2FF;
             --amber: #F59E0B;
             --amber-light: #FFFBEB;
             --crimson: #EF4444;
             --crimson-light: #FEE2E2;
 
-            --bg-body: #F8FAFC;
-            --slate-900: #0B1120;
-            --slate-800: #1E293B;
-            --slate-700: #334155;
-            --slate-600: #475569;
-            --slate-500: #64748B;
-            --slate-400: #94A3B8;
-            --slate-200: #E2E8F0;
-            --slate-100: #F1F5F9;
+            /* ── Crystalline Medical Atmosphere Palette ── */
+            --bg-body: #EDF5FD;
+            --bg-canvas: #EDF5FD;
+            --bg-card: rgba(255, 255, 255, 0.88);
+            --bg-card-hover: rgba(255, 255, 255, 0.97);
 
-            --glass-card: rgba(255, 255, 255, 0.85);
-            --glass-border: rgba(255, 255, 255, 0.6);
-            --glass-shadow: 0 20px 40px -15px rgba(15, 23, 42, 0.08), 0 0 1px 1px rgba(226, 232, 240, 0.8);
-            --glass-glow: 0 0 50px -10px rgba(0, 102, 255, 0.2);
+            /* ── High-Contrast Medical Deep Navy Hierarchy ── */
+            --slate-900: #0B1528;
+            --slate-800: #132238;
+            --slate-700: #253852;
+            --slate-600: #3E536E;
+            --slate-500: #5C718E;
+            --slate-400: #889DB8;
+            --slate-300: #CBD9E8;
+            --slate-200: #D8E5F3;
+            --slate-100: #E8F1FB;
+            --slate-50:  #F3F8FD;
+
+            /* ── Crystalline Glass & Porcelain Surfaces ── */
+            --glass-card: rgba(255, 255, 255, 0.88);
+            --glass-border: rgba(186, 215, 248, 0.65);
+            --glass-border-light: rgba(255, 255, 255, 0.92);
+            --glass-shadow: 0 20px 45px -12px rgba(2, 56, 122, 0.08), 0 0 0 1px rgba(186, 215, 248, 0.45);
+            --glass-glow: 0 0 45px -8px rgba(0, 102, 255, 0.22);
 
             --radius-sm: 10px;
             --radius-md: 16px;
@@ -74,7 +86,13 @@
 
         body {
             font-family: {{ app()->getLocale() == 'ar' ? "'Tajawal', 'Cairo'" : "'Inter', 'Tajawal'" }}, -apple-system, BlinkMacSystemFont, sans-serif;
-            background-color: var(--bg-body);
+            background: 
+                radial-gradient(circle at 12% 8%, rgba(191, 219, 254, 0.55) 0%, transparent 40%),
+                radial-gradient(circle at 88% 22%, rgba(186, 230, 253, 0.5) 0%, transparent 45%),
+                radial-gradient(circle at 50% 50%, rgba(224, 242, 254, 0.45) 0%, transparent 50%),
+                radial-gradient(circle at 15% 75%, rgba(199, 210, 254, 0.4) 0%, transparent 45%),
+                radial-gradient(circle at 85% 90%, rgba(186, 230, 253, 0.5) 0%, transparent 45%),
+                #EDF5FD;
             color: var(--slate-800);
             overflow-x: hidden;
             line-height: 1.6;
@@ -95,29 +113,42 @@
         /* ── Ambient Background Lighting ── */
         .ambient-glow-1 {
             position: fixed;
-            top: -200px;
+            top: -150px;
+            left: 10%;
+            width: 800px;
+            height: 800px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(0, 102, 255, 0.15) 0%, rgba(6, 182, 212, 0.08) 50%, transparent 70%);
+            filter: blur(100px);
+            pointer-events: none;
+            z-index: 0;
+            animation: pulseGlow 14s infinite alternate ease-in-out;
+        }
+        .ambient-glow-2 {
+            position: fixed;
+            top: 35%;
+            right: -100px;
+            width: 750px;
+            height: 750px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(6, 182, 212, 0.14) 0%, rgba(16, 185, 129, 0.07) 50%, transparent 70%);
+            filter: blur(110px);
+            pointer-events: none;
+            z-index: 0;
+            animation: pulseGlow 18s infinite alternate-reverse ease-in-out;
+        }
+        .ambient-glow-3 {
+            position: fixed;
+            bottom: -100px;
             left: 20%;
             width: 700px;
             height: 700px;
             border-radius: 50%;
-            background: radial-gradient(circle, rgba(0, 102, 255, 0.08) 0%, rgba(6, 182, 212, 0.03) 50%, transparent 70%);
-            filter: blur(80px);
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.12) 0%, rgba(0, 102, 255, 0.08) 50%, transparent 70%);
+            filter: blur(100px);
             pointer-events: none;
             z-index: 0;
-            animation: pulseGlow 12s infinite alternate ease-in-out;
-        }
-        .ambient-glow-2 {
-            position: fixed;
-            top: 40%;
-            right: -150px;
-            width: 600px;
-            height: 600px;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(16, 185, 129, 0.07) 0%, rgba(0, 102, 255, 0.03) 50%, transparent 70%);
-            filter: blur(90px);
-            pointer-events: none;
-            z-index: 0;
-            animation: pulseGlow 15s infinite alternate-reverse ease-in-out;
+            animation: pulseGlow 16s infinite alternate ease-in-out;
         }
         @keyframes pulseGlow {
             0% { transform: scale(1) translate(0, 0); }
@@ -266,19 +297,19 @@
             width: calc(100% - 48px);
             max-width: 1280px;
             z-index: 1000;
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(20px) saturate(180%);
-            -webkit-backdrop-filter: blur(20px) saturate(180%);
-            border: 1px solid var(--glass-border);
+            background: rgba(238, 246, 255, 0.85);
+            backdrop-filter: blur(20px) saturate(190%);
+            -webkit-backdrop-filter: blur(20px) saturate(190%);
+            border: 1px solid rgba(186, 215, 248, 0.7);
             border-radius: 100px;
-            box-shadow: 0 10px 30px -10px rgba(15, 23, 42, 0.08);
+            box-shadow: 0 10px 30px -10px rgba(2, 56, 122, 0.09), 0 0 0 1px rgba(255, 255, 255, 0.9);
             padding: 10px 24px;
             transition: all 0.3s ease;
         }
         .navbar-main.scrolled {
             top: 10px;
-            background: rgba(255, 255, 255, 0.95);
-            box-shadow: 0 15px 35px -5px rgba(15, 23, 42, 0.12);
+            background: rgba(240, 248, 255, 0.95);
+            box-shadow: 0 15px 35px -5px rgba(2, 56, 122, 0.14), 0 0 0 1px rgba(186, 215, 248, 0.8);
         }
         .nav-container {
             display: flex;
@@ -390,8 +421,8 @@
             color: #fff;
         }
         .btn-app-pill {
-            background: #fff;
-            border: 1.5px solid var(--slate-200);
+            background: rgba(255, 255, 255, 0.9);
+            border: 1.5px solid rgba(186, 215, 248, 0.8);
             color: var(--slate-800);
             padding: 8px 16px;
             border-radius: 100px;
@@ -402,6 +433,7 @@
             align-items: center;
             gap: 6px;
             transition: all 0.2s;
+            box-shadow: 0 2px 8px rgba(2, 56, 122, 0.04);
         }
         .btn-app-pill:hover {
             border-color: var(--emerald);
@@ -409,18 +441,19 @@
             background: var(--emerald-light);
         }
         .btn-lang-pill {
-            background: var(--slate-100);
-            color: var(--slate-700);
+            background: rgba(219, 234, 254, 0.5);
+            color: var(--slate-800);
             font-weight: 800;
             font-size: 0.8rem;
             padding: 6px 12px;
             border-radius: 100px;
+            border: 1px solid rgba(186, 215, 248, 0.6);
             text-decoration: none;
             transition: all 0.2s;
         }
         .btn-lang-pill:hover {
-            background: var(--slate-200);
-            color: var(--slate-900);
+            background: #fff;
+            color: var(--primary);
         }
         .menu-toggle {
             display: none;
@@ -437,6 +470,11 @@
             padding-bottom: 90px;
             position: relative;
             z-index: 1;
+            background-image: 
+                radial-gradient(rgba(0, 102, 255, 0.08) 1.5px, transparent 1.5px),
+                radial-gradient(rgba(6, 182, 212, 0.05) 1.5px, transparent 1.5px);
+            background-size: 32px 32px, 64px 64px;
+            background-position: 0 0, 16px 16px;
         }
         .hero-container {
             max-width: 1280px;
@@ -520,8 +558,8 @@
             color: #fff;
         }
         .btn-hero-secondary {
-            background: rgba(255, 255, 255, 0.9);
-            border: 1.5px solid var(--slate-200);
+            background: rgba(255, 255, 255, 0.85);
+            border: 1.5px solid rgba(186, 215, 248, 0.8);
             color: var(--slate-800);
             padding: 16px 28px;
             border-radius: 100px;
@@ -531,7 +569,7 @@
             display: inline-flex;
             align-items: center;
             gap: 10px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+            box-shadow: 0 4px 20px rgba(2, 56, 122, 0.05);
             transition: all 0.25s;
         }
         .btn-hero-secondary:hover {
@@ -539,6 +577,7 @@
             color: var(--primary);
             background: #fff;
             transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 102, 255, 0.15);
         }
 
         /* Hero Micro Floating Badges */
@@ -548,8 +587,8 @@
             gap: 12px;
         }
         .micro-badge {
-            background: #fff;
-            border: 1px solid var(--slate-200);
+            background: rgba(255, 255, 255, 0.85);
+            border: 1px solid rgba(186, 215, 248, 0.7);
             padding: 8px 14px;
             border-radius: 100px;
             font-size: 0.85rem;
@@ -558,11 +597,12 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
-            transition: transform 0.2s ease;
+            box-shadow: 0 2px 8px rgba(2, 56, 122, 0.04);
+            transition: transform 0.2s ease, border-color 0.2s;
         }
         .micro-badge:hover {
             transform: translateY(-2px);
+            background: #fff;
             border-color: var(--primary);
         }
         .micro-badge i {
@@ -575,12 +615,12 @@
             perspective: 1200px;
         }
         .hologram-card {
-            background: rgba(255, 255, 255, 0.88);
+            background: rgba(255, 255, 255, 0.9);
             backdrop-filter: blur(25px);
             -webkit-backdrop-filter: blur(25px);
-            border: 1px solid rgba(255, 255, 255, 0.9);
+            border: 1.5px solid rgba(255, 255, 255, 0.95);
             border-radius: var(--radius-xl);
-            box-shadow: 0 30px 60px -15px rgba(15, 23, 42, 0.15), 0 0 50px -10px rgba(0, 102, 255, 0.2);
+            box-shadow: 0 30px 60px -15px rgba(2, 56, 122, 0.14), 0 0 0 1px rgba(186, 215, 248, 0.5), 0 0 50px -10px rgba(0, 102, 255, 0.2);
             padding: 28px;
             transition: transform 0.1s ease-out;
             transform-style: preserve-3d;
@@ -681,11 +721,17 @@
             align-items: center;
             justify-content: space-between;
             padding: 12px 14px;
-            background: #fff;
-            border: 1px solid var(--slate-100);
+            background: rgba(240, 247, 255, 0.75);
+            border: 1px solid rgba(186, 215, 248, 0.5);
             border-radius: var(--radius-sm);
             margin-bottom: 10px;
-            transition: transform 0.2s;
+            transition: transform 0.2s, background 0.2s;
+        }
+        .test-metric-row:hover {
+            transform: translateX(-4px);
+            background: #fff;
+            border-color: rgba(0, 102, 255, 0.3);
+            box-shadow: 0 4px 15px rgba(0, 102, 255, 0.08);
         }
         .test-metric-row:hover {
             transform: translateX(-4px);
@@ -802,8 +848,9 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            background: var(--primary-light);
+            background: linear-gradient(135deg, rgba(0, 102, 255, 0.12), rgba(6, 182, 212, 0.12));
             color: var(--primary);
+            border: 1px solid rgba(0, 102, 255, 0.25);
             padding: 6px 18px;
             border-radius: 100px;
             font-size: 0.82rem;
@@ -811,6 +858,7 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
             margin-bottom: 16px;
+            box-shadow: 0 2px 10px rgba(0, 102, 255, 0.06);
         }
         .section-heading {
             font-size: 2.6rem;
@@ -828,10 +876,12 @@
 
         /* ── #1: INTERACTIVE BIOMARKER SIMULATOR (#biomarkers) ── */
         .simulator-card {
-            background: #fff;
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
             border-radius: var(--radius-xl);
-            border: 1px solid var(--slate-200);
-            box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.08);
+            border: 1.5px solid rgba(186, 215, 248, 0.7);
+            box-shadow: 0 30px 60px -15px rgba(2, 56, 122, 0.1), 0 0 0 1px rgba(255, 255, 255, 0.85);
             padding: 40px;
             display: grid;
             grid-template-columns: 1.2fr 0.8fr;
@@ -854,16 +904,16 @@
             gap: 24px;
         }
         .sim-slider-group {
-            background: var(--slate-50);
+            background: rgba(240, 247, 255, 0.65);
             padding: 18px 22px;
             border-radius: var(--radius-md);
-            border: 1px solid var(--slate-200);
+            border: 1px solid rgba(186, 215, 248, 0.6);
             transition: all 0.2s;
         }
         .sim-slider-group:hover {
             background: #fff;
             border-color: var(--primary);
-            box-shadow: 0 4px 15px rgba(0, 102, 255, 0.08);
+            box-shadow: 0 6px 20px rgba(0, 102, 255, 0.1);
         }
         .sim-slider-head {
             display: flex;
@@ -1048,8 +1098,8 @@
             gap: 10px;
         }
         .preset-q-btn {
-            background: #fff;
-            border: 1.5px solid var(--slate-200);
+            background: rgba(255, 255, 255, 0.88);
+            border: 1.5px solid rgba(186, 215, 248, 0.65);
             padding: 14px 20px;
             border-radius: var(--radius-md);
             text-align: right;
@@ -1062,6 +1112,7 @@
             align-items: center;
             justify-content: space-between;
             transition: all 0.25s;
+            box-shadow: 0 2px 8px rgba(2, 56, 122, 0.03);
         }
         [dir="ltr"] .preset-q-btn { text-align: left; }
         .preset-q-btn:hover, .preset-q-btn.active {
@@ -1069,6 +1120,7 @@
             background: var(--primary-light);
             color: var(--primary);
             transform: translateX(-4px);
+            box-shadow: 0 6px 16px rgba(0, 102, 255, 0.12);
         }
         [dir="ltr"] .preset-q-btn:hover, [dir="ltr"] .preset-q-btn.active {
             transform: translateX(4px);
@@ -1077,9 +1129,9 @@
         /* Chat Window Device Mockup */
         .chat-device-card {
             background: #fff;
-            border: 1px solid var(--slate-200);
+            border: 1.5px solid rgba(186, 215, 248, 0.8);
             border-radius: var(--radius-xl);
-            box-shadow: 0 25px 50px -15px rgba(15, 23, 42, 0.1);
+            box-shadow: 0 30px 60px -15px rgba(2, 56, 122, 0.12), 0 0 0 1px rgba(255, 255, 255, 0.85);
             overflow: hidden;
             display: flex;
             flex-direction: column;
@@ -1213,19 +1265,22 @@
             gap: 24px;
         }
         .bento-card {
-            background: #fff;
-            border: 1px solid var(--slate-200);
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1.5px solid rgba(186, 215, 248, 0.65);
             border-radius: var(--radius-xl);
             padding: 34px;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 10px 30px -10px rgba(15, 23, 42, 0.05);
-            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s;
+            box-shadow: 0 15px 35px -10px rgba(2, 56, 122, 0.06), 0 0 0 1px rgba(255, 255, 255, 0.85);
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s, border-color 0.3s;
         }
         .bento-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 20px 45px -10px rgba(0, 102, 255, 0.12);
-            border-color: rgba(0, 102, 255, 0.3);
+            box-shadow: 0 25px 50px -10px rgba(0, 102, 255, 0.15);
+            border-color: rgba(0, 102, 255, 0.4);
+            background: rgba(255, 255, 255, 0.98);
         }
         .bento-card.span-2 {
             grid-column: span 2;
@@ -1308,17 +1363,21 @@
             position: relative;
         }
         .step-card {
-            background: #fff;
-            border: 1px solid var(--slate-200);
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1.5px solid rgba(186, 215, 248, 0.65);
             border-radius: var(--radius-lg);
             padding: 36px 30px;
             position: relative;
             transition: all 0.3s;
+            box-shadow: 0 15px 35px -10px rgba(2, 56, 122, 0.06);
         }
         .step-card:hover {
             transform: translateY(-6px);
             border-color: var(--primary);
-            box-shadow: 0 20px 40px -15px rgba(0, 102, 255, 0.15);
+            box-shadow: 0 25px 50px -15px rgba(0, 102, 255, 0.18);
+            background: #fff;
         }
         .step-num {
             position: absolute;
@@ -1361,10 +1420,12 @@
 
         /* ── #5: ULTRA-REFINED BOOKING SECTION (#booking) ── */
         .booking-card {
-            background: #fff;
-            border: 1px solid var(--slate-200);
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1.5px solid rgba(186, 215, 248, 0.75);
             border-radius: var(--radius-xl);
-            box-shadow: 0 30px 60px -15px rgba(15, 23, 42, 0.08);
+            box-shadow: 0 30px 70px -15px rgba(2, 56, 122, 0.12), 0 0 0 1px rgba(255, 255, 255, 0.9);
             padding: 48px;
             position: relative;
         }
@@ -1405,8 +1466,8 @@
             width: 100%;
             padding: 14px 18px 14px 48px;
             border-radius: var(--radius-sm);
-            border: 1.5px solid var(--slate-200);
-            background: var(--slate-50);
+            border: 1.5px solid rgba(186, 215, 248, 0.7);
+            background: rgba(240, 247, 255, 0.65);
             font-family: inherit;
             font-size: 0.95rem;
             color: var(--slate-800);
@@ -1423,21 +1484,21 @@
         .input-wrap-icon textarea:focus {
             background: #fff;
             border-color: var(--primary);
-            box-shadow: 0 0 0 4px var(--primary-light);
+            box-shadow: 0 0 0 4px rgba(0, 102, 255, 0.18);
         }
 
         /* Analysis Search & Pills */
         .analysis-selection-box {
-            border: 1.5px solid var(--slate-200);
+            border: 1.5px solid rgba(186, 215, 248, 0.7);
             border-radius: var(--radius-md);
             padding: 18px;
-            background: var(--slate-50);
+            background: rgba(240, 247, 255, 0.65);
         }
         .analysis-search-input {
             width: 100%;
             padding: 10px 16px;
             border-radius: var(--radius-sm);
-            border: 1px solid var(--slate-200);
+            border: 1px solid rgba(186, 215, 248, 0.7);
             font-family: inherit;
             font-size: 0.9rem;
             margin-bottom: 14px;
@@ -1460,7 +1521,7 @@
             background: #fff;
             padding: 10px 14px;
             border-radius: 8px;
-            border: 1px solid var(--slate-200);
+            border: 1px solid rgba(186, 215, 248, 0.6);
             cursor: pointer;
             font-size: 0.88rem;
             font-weight: 700;
@@ -1527,10 +1588,12 @@
 
         /* ── FOOTER ── */
         .site-footer {
-            background: #0B1120;
+            background: linear-gradient(180deg, #07101E 0%, #040913 100%);
             color: #fff;
             padding: 80px 0 30px;
-            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            border-top: 2px solid transparent;
+            border-image: linear-gradient(90deg, #0066FF, #06B6D4, #10B981) 1;
+            position: relative;
         }
         .footer-grid {
             display: grid;
@@ -1640,6 +1703,7 @@
     <div class="grain-overlay"></div>
     <div class="ambient-glow-1"></div>
     <div class="ambient-glow-2"></div>
+    <div class="ambient-glow-3"></div>
 
     <!-- ══════════════════ 1. PRELOADER & WARMUP ══════════════════ -->
     <div class="medical-loader" id="medicalLoader">
@@ -1846,7 +1910,7 @@
     </section>
 
     <!-- ══════════════════ 4. INTERACTIVE BIOMARKER SIMULATOR (#biomarkers) ══════════════════ -->
-    <section id="biomarkers" class="section-wrap" style="background: #fff; border-top: 1px solid var(--slate-200); border-bottom: 1px solid var(--slate-200);">
+    <section id="biomarkers" class="section-wrap" style="background: linear-gradient(180deg, rgba(237, 245, 253, 0.45) 0%, rgba(225, 240, 255, 0.85) 50%, rgba(237, 245, 253, 0.45) 100%); border-top: 1px solid rgba(186, 215, 248, 0.6); border-bottom: 1px solid rgba(186, 215, 248, 0.6);">
         <div class="container">
             
             <div class="section-header-center">
@@ -1954,7 +2018,7 @@
     </section>
 
     <!-- ══════════════════ 5. INTERACTIVE MEDICAL AI CHAT (#ask-ai) ══════════════════ -->
-    <section id="ask-ai" class="section-wrap">
+    <section id="ask-ai" class="section-wrap" style="background: radial-gradient(circle at 50% 50%, rgba(224, 242, 254, 0.65) 0%, rgba(237, 245, 253, 0.3) 70%);">
         <div class="container">
             
             <div class="chat-showcase-grid">
@@ -2029,7 +2093,7 @@
     </section>
 
     <!-- ══════════════════ 6. INTERACTIVE BENTO GRID (#bento) ══════════════════ -->
-    <section id="bento" class="section-wrap" style="background: #fff; border-top: 1px solid var(--slate-200); border-bottom: 1px solid var(--slate-200);">
+    <section id="bento" class="section-wrap" style="background: linear-gradient(180deg, rgba(228, 242, 255, 0.55) 0%, rgba(219, 236, 254, 0.85) 50%, rgba(232, 244, 254, 0.55) 100%); border-top: 1px solid rgba(186, 215, 248, 0.6); border-bottom: 1px solid rgba(186, 215, 248, 0.6);">
         <div class="container">
             
             <div class="section-header-center">
@@ -2126,7 +2190,7 @@
     </section>
 
     <!-- ══════════════════ 7. HOW IT WORKS (#how) ══════════════════ -->
-    <section id="how" class="section-wrap">
+    <section id="how" class="section-wrap" style="background: radial-gradient(circle at 80% 40%, rgba(186, 230, 253, 0.45) 0%, transparent 65%);">
         <div class="container">
             
             <div class="section-header-center">
@@ -2192,7 +2256,7 @@
     </section>
 
     <!-- ══════════════════ 8. ULTRA-REFINED BOOKING SECTION (#booking) ══════════════════ -->
-    <section id="booking" class="section-wrap" style="background: #fff; border-top: 1px solid var(--slate-200);">
+    <section id="booking" class="section-wrap" style="background: linear-gradient(180deg, rgba(232, 244, 254, 0.65) 0%, rgba(220, 238, 255, 0.95) 100%); border-top: 1px solid rgba(186, 215, 248, 0.65);">
         <div class="container">
             
             <div class="section-header-center">

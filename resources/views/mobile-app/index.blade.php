@@ -33,18 +33,18 @@
             --crimson: #EF4444;
             --crimson-light: #FEE2E2;
 
-            --bg-app: #F8FAFC;
-            --surface-card: #FFFFFF;
-            --border-light: #E2E8F0;
+            --bg-app: #EDF5FD;
+            --surface-card: rgba(255, 255, 255, 0.94);
+            --border-light: rgba(186, 215, 248, 0.65);
             
-            --slate-900: #0F172A;
-            --slate-800: #1E293B;
-            --slate-700: #334155;
-            --slate-600: #475569;
-            --slate-500: #64748B;
-            --slate-400: #94A3B8;
-            --slate-200: #E2E8F0;
-            --slate-100: #F1F5F9;
+            --slate-900: #0B1528;
+            --slate-800: #132238;
+            --slate-700: #253852;
+            --slate-600: #3E536E;
+            --slate-500: #5C718E;
+            --slate-400: #889DB8;
+            --slate-200: #D8E5F3;
+            --slate-100: #E8F1FB;
 
             --app-header-h: 62px;
             --app-bottom-h: 70px;
@@ -80,14 +80,16 @@
             max-width: 500px;
             margin: 0 auto;
             position: relative;
-            background: #fff;
+            background: #EDF5FD;
             box-shadow: 0 0 40px rgba(0, 0, 0, 0.08);
         }
 
         /* ── Top Native App Bar ── */
         .app-topbar {
             height: var(--app-header-h);
-            background: #fff;
+            background: rgba(238, 246, 255, 0.92);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--border-light);
             display: flex;
             align-items: center;
@@ -168,10 +170,10 @@
 
         /* ── Common Mobile UI Components ── */
         .mobile-card {
-            background: #fff;
+            background: rgba(255, 255, 255, 0.94);
             border-radius: 18px;
-            border: 1px solid var(--border-light);
-            box-shadow: 0 4px 15px rgba(15, 23, 42, 0.03);
+            border: 1.5px solid var(--border-light);
+            box-shadow: 0 10px 30px -10px rgba(2, 56, 122, 0.07);
             padding: 20px;
             margin-bottom: 16px;
         }
@@ -455,7 +457,7 @@
         /* ── FIXED NATIVE BOTTOM NAVIGATION BAR ── */
         .app-bottom-bar {
             height: var(--app-bottom-h);
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(238, 246, 255, 0.94);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border-top: 1px solid var(--border-light);

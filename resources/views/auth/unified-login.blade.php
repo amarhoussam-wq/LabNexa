@@ -839,18 +839,6 @@
                     </div>
                 </div>
 
-                <div class="demo-box">
-                    <div class="demo-box-title"><i class="fas fa-key"></i> {{ app()->getLocale() == 'ar' ? 'بيانات الدخول التجريبية' : 'Identifiants de démonstration' }}</div>
-                    <div class="demo-row">
-                        <span class="demo-label">{{ app()->getLocale() == 'ar' ? 'المستخدم' : 'Utilisateur' }}</span>
-                        <span class="demo-value patient-val" onclick="copyDemo(this, 'admin')">admin</span>
-                    </div>
-                    <div class="demo-row">
-                        <span class="demo-label">{{ app()->getLocale() == 'ar' ? 'كلمة المرور' : 'Mot de passe' }}</span>
-                        <span class="demo-value patient-val" onclick="copyDemo(this, 'admin123')">admin123</span>
-                    </div>
-                </div>
-
                 <div class="field-group">
                     <label class="field-label">{{ __('messages.username_or_email') }}</label>
                     <div class="field-input-wrap">
@@ -895,22 +883,10 @@
                     </div>
                 </div>
 
-                <div class="demo-box">
-                    <div class="demo-box-title"><i class="fas fa-key"></i> {{ app()->getLocale() == 'ar' ? 'بيانات الدخول التجريبية' : 'Identifiants de démonstration' }}</div>
-                    <div class="demo-row">
-                        <span class="demo-label">{{ app()->getLocale() == 'ar' ? 'المستخدم' : 'Utilisateur' }}</span>
-                        <span class="demo-value doctor-val" onclick="copyDemo(this, 'admin')">admin</span>
-                    </div>
-                    <div class="demo-row">
-                        <span class="demo-label">{{ app()->getLocale() == 'ar' ? 'كلمة المرور' : 'Mot de passe' }}</span>
-                        <span class="demo-value doctor-val" onclick="copyDemo(this, 'admin123')">admin123</span>
-                    </div>
-                </div>
-
                 <div class="field-group">
                     <label class="field-label">{{ __('messages.username_or_email') }}</label>
                     <div class="field-input-wrap">
-                        <input type="text" name="email" class="field-input" placeholder="admin / doctor@lab.dz" value="{{ old('email') }}">
+                        <input type="text" name="email" class="field-input" placeholder="doctor@lab.dz" value="{{ old('email') }}">
                         <i class="fas fa-envelope field-icon"></i>
                     </div>
                 </div>
@@ -945,22 +921,10 @@
                     </div>
                 </div>
 
-                <div class="demo-box">
-                    <div class="demo-box-title"><i class="fas fa-key"></i> {{ app()->getLocale() == 'ar' ? 'بيانات الدخول التجريبية' : 'Identifiants de démonstration' }}</div>
-                    <div class="demo-row">
-                        <span class="demo-label">{{ app()->getLocale() == 'ar' ? 'المستخدم' : 'Utilisateur' }}</span>
-                        <span class="demo-value admin-val" onclick="copyDemo(this, 'admin')">admin</span>
-                    </div>
-                    <div class="demo-row">
-                        <span class="demo-label">{{ app()->getLocale() == 'ar' ? 'كلمة المرور' : 'Mot de passe' }}</span>
-                        <span class="demo-value admin-val" onclick="copyDemo(this, 'admin123')">admin123</span>
-                    </div>
-                </div>
-
                 <div class="field-group">
                     <label class="field-label">{{ __('messages.username_or_email') }}</label>
                     <div class="field-input-wrap">
-                        <input type="text" name="name" class="field-input" placeholder="admin" value="{{ old('name') }}" required>
+                        <input type="text" name="name" class="field-input" placeholder="{{ __('messages.username_or_email') }}" value="{{ old('name') }}" required>
                         <i class="fas fa-user-gear field-icon"></i>
                     </div>
                 </div>
@@ -1037,17 +1001,6 @@
                 input.type = 'password';
                 icon.className = 'fas fa-eye';
             }
-        }
-
-        /* ── Copy Demo Credentials ── */
-        function copyDemo(el, value) {
-            // Copy to clipboard
-            if (navigator.clipboard) {
-                navigator.clipboard.writeText(value);
-            }
-            // Show tooltip
-            el.classList.add('copied');
-            setTimeout(() => el.classList.remove('copied'), 1200);
         }
 
         /* ── Restore state on validation error ── */
