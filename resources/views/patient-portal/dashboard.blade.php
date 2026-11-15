@@ -3,227 +3,290 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ __('messages.patient_dashboard') }} - {{ __('messages.lab_name') }}</title>
+    <title>{{ __('messages.patient_dashboard') }} — {{ __('messages.lab_name') }}</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Icons & Bootstrap -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
+        /* ══════════════════════════════════════════════════════════════════════
+           LabNexa — Apple Health Style Patient Portal Dashboard
+           Clean • Reassuring • Precision Health Care
+        ══════════════════════════════════════════════════════════════════════ */
         :root {
-            --primary-color: #3b82f6; /* Modern Blue */
-            --primary-dark: #2563eb;
-            --primary-light: #eff6ff;
-            --success-color: #10b981;
-            --success-light: #ecfdf5;
-            --warning-color: #f59e0b;
-            --warning-light: #fffbeb;
-            --danger-color: #ef4444;
-            --text-main: #334155;
-            --text-muted: #64748b;
-            --bg-body: #f8fafc;
-            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
-            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.05), 0 4px 6px -4px rgb(0 0 0 / 0.05);
+            --patient-primary: #0066FF;
+            --patient-primary-dark: #0052CC;
+            --patient-light: #EBF3FF;
+            --patient-emerald: #10B981;
+            --patient-emerald-light: #ECFDF5;
+            --patient-amber: #F59E0B;
+            --patient-amber-light: #FFFBEB;
+            --patient-bg: #F8FAFC;
+            --patient-surface: #FFFFFF;
+            --patient-text: #0F172A;
+            --patient-text-muted: #64748B;
+            --patient-border: #E2E8F0;
+            --radius-md: 14px;
+            --radius-lg: 22px;
+            --shadow-subtle: 0 1px 3px rgba(0,0,0,0.04);
+            --shadow-card: 0 10px 25px -5px rgba(15, 23, 42, 0.05), 0 4px 6px -2px rgba(15, 23, 42, 0.02);
         }
 
         body {
-            font-family: {{ app()->getLocale() == 'ar' ? "'Tajawal', system-ui, sans-serif" : "'Outfit', system-ui, sans-serif" }};
-            background-color: var(--bg-body);
-            color: var(--text-main);
-            padding-bottom: 50px;
+            font-family: {{ app()->getLocale() == 'ar' ? "'Tajawal'" : "'Inter'" }}, -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--patient-bg);
+            color: var(--patient-text);
+            min-height: 100vh;
+            padding-bottom: 60px;
         }
 
-        .navbar-patient {
-            background: white;
-            box-shadow: var(--shadow-sm);
-            padding: 18px 0;
-            margin-bottom: 35px;
-            border-bottom: 1px solid #e2e8f0;
+        /* ── Top Navbar ── */
+        .patient-navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--patient-border);
+            padding: 14px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
         }
 
-        .portal-logo {
-            font-size: 20px;
-            font-weight: 800;
-            color: var(--primary-color);
-            text-decoration: none;
-        }
-
-        .card-custom {
-            background: white;
-            border-radius: 16px;
-            border: 1px solid rgba(0,0,0,0.03);
-            box-shadow: var(--shadow-sm);
-            margin-bottom: 25px;
-            overflow: hidden;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        .card-custom:hover {
-            transform: translateY(-4px);
-            box-shadow: var(--shadow);
-            border-color: rgba(59, 130, 246, 0.1);
-        }
-
-        .card-header-custom {
-            padding: 22px 25px;
-            background: transparent;
-            border-bottom: 1px solid #f1f5f9;
-            font-weight: 700;
+        .patient-brand {
             display: flex;
             align-items: center;
             gap: 12px;
-            font-size: 1.05rem;
+            text-decoration: none;
+            color: var(--patient-text);
+            font-weight: 800;
+            font-size: 1.25rem;
         }
 
-        .status-pill {
-            padding: 8px 18px;
-            border-radius: 50px;
-            font-size: 12px;
+        .patient-brand img {
+            height: 40px;
+            width: auto;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 102, 255, 0.15);
+        }
+
+        .lang-pill-patient {
+            display: flex;
+            background: var(--patient-bg);
+            border: 1px solid var(--patient-border);
+            border-radius: 100px;
+            padding: 3px;
+            gap: 2px;
+        }
+
+        .lang-pill-patient a {
+            padding: 5px 14px;
+            font-size: 11px;
             font-weight: 700;
-            letter-spacing: 0.05em;
+            border-radius: 100px;
+            text-decoration: none;
+            color: var(--patient-text-muted);
+            transition: all 0.2s;
+        }
+
+        .lang-pill-patient a.active {
+            background: var(--patient-primary);
+            color: #fff;
+        }
+
+        .btn-patient-logout {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: var(--radius-md);
+            font-size: 0.85rem;
+            font-weight: 700;
+            background: #FEE2E2;
+            color: #DC2626;
+            border: 1px solid #FECACA;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-patient-logout:hover {
+            background: #DC2626;
+            color: #fff;
+        }
+
+        /* ── Hero Welcome Banner ── */
+        .patient-welcome-banner {
+            background: linear-gradient(135deg, #0B1120 0%, #1E293B 100%);
+            border-radius: var(--radius-lg);
+            padding: 32px 36px;
+            color: #fff;
+            margin: 28px 0;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: var(--shadow-card);
+        }
+
+        .patient-welcome-banner::after {
+            content: '';
+            position: absolute;
+            top: -40%;
+            right: -10%;
+            width: 320px;
+            height: 320px;
+            background: radial-gradient(circle, rgba(0, 102, 255, 0.3) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .patient-card-modern {
+            background: #fff;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--patient-border);
+            box-shadow: var(--shadow-card);
+            margin-bottom: 24px;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .patient-card-header {
+            padding: 20px 26px;
+            border-bottom: 1px solid var(--patient-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-weight: 800;
+            font-size: 1.05rem;
+            color: var(--patient-text);
+        }
+
+        .status-badge-patient {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 100px;
+            font-size: 0.78rem;
+            font-weight: 800;
             text-transform: uppercase;
         }
 
-        .status-booked { background: #f1f5f9; color: #475569; }
-        .status-ready { background: #dcfce7; color: #166534; }
-        .status-completed { background: #e0f2fe; color: #075985; }
-        .status-blocked { background: #fee2e2; color: #991b1b; }
-        .status-warning { background: #fef3c7; color: #92400e; }
+        .status-badge-patient.status-ready,
+        .status-badge-patient.status-completed { background: var(--patient-emerald-light); color: var(--patient-emerald); }
+        .status-badge-patient.status-booked,
+        .status-badge-patient.status-pending   { background: var(--patient-amber-light); color: #D97706; }
+        .status-badge-patient.status-blocked   { background: #FEE2E2; color: #DC2626; }
 
-        .analysis-item {
-            padding: 15px 25px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #f1f5f9;
-        }
-
-        .analysis-item:last-child { border-bottom: none; }
-
-        .prep-instructions {
-            background: var(--warning-light);
-            border-left: 4px solid var(--warning-color);
-            padding: 16px;
-            border-radius: 8px;
-            font-size: 14px;
-            margin-top: 12px;
-            color: #78350f;
-        }
-        
-        [dir="rtl"] .prep-instructions {
-            border-left: none;
-            border-right: 4px solid var(--warning-color);
-        }
-
-        .btn-download {
-            background: var(--primary-color);
-            color: white;
-            border-radius: 10px;
-            padding: 12px 22px;
-            font-weight: 600;
-            text-decoration: none;
+        .btn-patient-cta {
             display: inline-flex;
             align-items: center;
             gap: 10px;
-            transition: all 0.2s ease;
-            box-shadow: var(--shadow-sm);
-        }
-
-        .btn-download:hover {
-            background: var(--primary-dark);
-            color: white;
-            box-shadow: var(--shadow);
-            transform: translateY(-2px);
-        }
-
-        .info-label {
-            font-size: 13px;
-            color: var(--text-muted);
-            margin-bottom: 2px;
-        }
-
-        .info-value {
-            font-weight: 700;
-            font-size: 16px;
-        }
-
-        .alert-item {
-            padding: 16px;
-            border-radius: 12px;
-            margin-bottom: 15px;
-            border-left: 4px solid;
-            display: flex;
-            gap: 15px;
-            background: white;
-            box-shadow: var(--shadow-sm);
-        }
-        
-        [dir="rtl"] .alert-item {
-            border-left: none;
-            border-right: 4px solid;
-        }
-
-        .alert-info { background: var(--primary-light); border-color: var(--primary-color); color: #1e3a8a; }
-        .alert-success { background: var(--success-light); border-color: var(--success-color); color: #064e3b; }
-
-        .logout-link {
-            padding: 10px 20px;
-            border-radius: 8px;
-            color: var(--danger-color);
-            background: #fef2f2;
+            padding: 14px 24px;
+            border-radius: var(--radius-md);
+            font-weight: 800;
+            font-size: 0.95rem;
             text-decoration: none;
-            font-weight: 600;
-            font-size: 14px;
-            transition: all 0.2s ease;
+            transition: all 0.25s;
         }
 
-        .logout-link:hover {
-            background: var(--danger-color);
-            color: white;
-            box-shadow: var(--shadow-sm);
+        .btn-patient-cta.primary {
+            background: linear-gradient(135deg, var(--patient-primary) 0%, #0052CC 100%);
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(0, 102, 255, 0.25);
         }
-        
-        .empty-state {
-            text-align: center;
-            padding: 40px;
-            color: var(--text-muted);
+
+        .btn-patient-cta.primary:hover {
+            box-shadow: 0 8px 25px rgba(0, 102, 255, 0.4);
+            transform: translateY(-2px);
+            color: #fff;
         }
-        
-        .empty-state i {
-            font-size: 48px;
-            margin-bottom: 15px;
-            opacity: 0.3;
+
+        .btn-patient-cta.emerald {
+            background: linear-gradient(135deg, var(--patient-emerald) 0%, #059669 100%);
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.25);
+        }
+
+        .btn-patient-cta.emerald:hover {
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+            transform: translateY(-2px);
+            color: #fff;
+        }
+
+        .analysis-instruction-row {
+            padding: 16px 26px;
+            border-bottom: 1px solid #F1F5F9;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .analysis-instruction-row:last-child {
+            border-bottom: none;
+        }
+
+        .prep-callout {
+            background: #FFFBEB;
+            border: 1px solid #FDE68A;
+            border-radius: 10px;
+            padding: 12px 16px;
+            font-size: 0.88rem;
+            color: #92400E;
+            margin-top: 6px;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+        }
+
+        .alert-card-smart {
+            background: #fff;
+            border: 1px solid var(--patient-border);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            box-shadow: var(--shadow-subtle);
         }
     </style>
 </head>
+
 <body>
 
-    <nav class="navbar-patient">
+    <!-- Patient Top Navbar -->
+    <nav class="patient-navbar">
         <div class="container d-flex justify-content-between align-items-center">
-            <a href="{{ route('home') }}" class="portal-logo">
-                <i class="fas fa-microscope me-2"></i> {{ __('messages.lab_name') }}
+            <a href="{{ route('home') }}" class="patient-brand">
+                <img src="{{ asset('images/logo.png') }}" alt="Logo" onerror="this.src='https://cdn-icons-png.flaticon.com/512/822/822143.png'">
+                <span>{{ __('messages.lab_name') }}</span>
             </a>
+
             <div class="d-flex align-items-center gap-3">
-                    {{ __('messages.connected_as') }}: <strong>{{ $patient->name }}</strong>
-                </span>
-                {{-- Language Switcher Pill --}}
-                <div class="d-flex bg-white rounded-pill p-1 border shadow-sm" style="min-width: 100px;">
-                    <a href="{{ route('lang.switch', 'ar') }}" 
-                       class="flex-fill text-center rounded-pill px-2 py-1 text-decoration-none {{ app()->getLocale() == 'ar' ? 'bg-primary text-white fw-bold shadow-sm' : 'text-muted' }}"
-                       style="font-size: 11px; transition: all 0.3s;">
-                        العربية
-                    </a>
-                    <a href="{{ route('lang.switch', 'fr') }}" 
-                       class="flex-fill text-center rounded-pill px-2 py-1 text-decoration-none {{ app()->getLocale() == 'fr' ? 'bg-primary text-white fw-bold shadow-sm' : 'text-muted' }}"
-                       style="font-size: 11px; transition: all 0.3s;">
-                        FR
-                    </a>
+                <div class="d-none d-md-flex align-items-center gap-2" style="font-size:0.9rem; color:var(--patient-text-muted);">
+                    <i class="fas fa-user-circle text-primary"></i>
+                    <span>{{ __('messages.connected_as') }}: <strong>{{ $patient->name }}</strong></span>
                 </div>
-                <form action="{{ route('patient.logout') }}" method="POST">
+
+                <!-- Language Switcher -->
+                <div class="lang-pill-patient">
+                    <a href="{{ route('lang.switch', 'ar') }}" class="{{ app()->getLocale() == 'ar' ? 'active' : '' }}">العربية</a>
+                    <a href="{{ route('lang.switch', 'fr') }}" class="{{ app()->getLocale() == 'fr' ? 'active' : '' }}">Français</a>
+                </div>
+
+                <!-- Logout -->
+                <form action="{{ route('patient.logout') }}" method="POST" style="margin:0;">
                     @csrf
-                    <button type="submit" class="logout-link border-0">
-                        <i class="fas fa-sign-out-alt"></i> {{ __('messages.logout') }}
+                    <button type="submit" class="btn-patient-logout">
+                        <i class="fas fa-arrow-right-from-bracket"></i>
+                        <span class="d-none d-md-inline">{{ __('messages.logout') }}</span>
                     </button>
                 </form>
             </div>
@@ -232,175 +295,184 @@
 
     <div class="container">
         
-        <!-- Welcome Header -->
-        <div class="row mb-4">
-            <div class="col-md-6">
-                <h2 class="fw-bold mb-1">{{ __('messages.welcome_patient', ['name' => $patient->name]) }}</h2>
-                <p class="text-muted">{{ __('messages.portal_dashboard_desc') }}</p>
-            </div>
-            
-            <!-- Quick Actions -->
-            <div class="col-md-6">
-                <div class="d-flex gap-3 justify-content-md-end">
-                    @if($reservation && ($reservation->result_file_path || $hasDbResults))
-                        <a href="{{ $reservation->result_file_path ? route('patient.download', $reservation->id) : route('reservation.pdf', ['id' => $reservation->id, 'type' => 'confirmed']) }}" 
-                           target="_blank"
-                           class="btn shadow-sm btn-success rounded-4 p-3 d-flex align-items-center gap-3">
-                            <i class="fas fa-file-invoice fa-2x"></i>
-                            <div class="text-start">
-                                <div class="fw-bold">{{ __('messages.medical_results') }}</div>
-                                <div class="small opacity-75">{{ __('messages.view_and_download') }}</div>
-                            </div>
-                        </a>
-                    @endif
+        <!-- Welcome Hero Banner -->
+        <div class="patient-welcome-banner">
+            <div class="row align-items-center g-4">
+                <div class="col-lg-7">
+                    <span style="font-size:0.8rem; font-weight:800; color:#60A5FA; background:rgba(0,102,255,0.2); padding:4px 12px; border-radius:100px; display:inline-block; margin-bottom:12px;">
+                        <i class="fas fa-heartbeat me-1"></i> {{ __('messages.patient_portal') }}
+                    </span>
+                    <h1 style="font-size:2rem; font-weight:900; margin-bottom:8px; letter-spacing:-0.5px;">
+                        {{ __('messages.welcome_patient', ['name' => $patient->name]) }}
+                    </h1>
+                    <p style="color:var(--patient-text-muted); font-size:1rem; margin:0; max-width:550px;">
+                        {{ __('messages.portal_dashboard_desc') }}
+                    </p>
+                </div>
 
-                    @if($reservation)
-                        <a href="{{ route('patient.report.eligibility', ['id' => $reservation->id, 'report_type' => 'eligibility']) }}" 
-                           target="_blank"
-                           class="btn shadow-sm btn-primary rounded-4 p-3 d-flex align-items-center gap-3">
-                            <i class="fas fa-notes-medical fa-2x"></i>
-                            <div class="text-start">
-                                <div class="fw-bold">{{ __('messages.eligibility_report') }}</div>
-                                <div class="small opacity-75">{{ __('messages.view_report') }}</div>
-                            </div>
-                        </a>
-                    @endif
+                <div class="col-lg-5 text-lg-end">
+                    <div class="d-inline-flex flex-wrap gap-2 justify-content-lg-end">
+                        @if($reservation && ($reservation->result_file_path || $hasDbResults))
+                            <a href="{{ $reservation->result_file_path ? route('patient.download', $reservation->id) : route('reservation.pdf', ['id' => $reservation->id, 'type' => 'confirmed']) }}" 
+                               target="_blank"
+                               class="btn-patient-cta emerald">
+                                <i class="fas fa-file-invoice"></i>
+                                <span>{{ __('messages.medical_results') }} (PDF)</span>
+                            </a>
+                        @endif
+
+                        @if($reservation)
+                            <a href="{{ route('patient.report.eligibility', ['id' => $reservation->id, 'report_type' => 'eligibility']) }}" 
+                               target="_blank"
+                               class="btn-patient-cta primary">
+                                <i class="fas fa-file-medical"></i>
+                                <span>{{ __('messages.eligibility_report') }}</span>
+                            </a>
+                        @endif
+                    </div>
                 </div>
             </div>
         </div>
 
         @if(!$reservation)
-            <div class="card-custom">
-                <div class="empty-state">
-                    <i class="fas fa-folder-open"></i>
-                    <h5>{{ __('messages.no_results_yet') ?? 'No results found in your account yet.' }}</h5>
-                    <p>{{ __('messages.results_will_appear_here') ?? 'Your medical reports will appear here once they are ready.' }}</p>
-                </div>
+            <div class="patient-card-modern p-5 text-center">
+                <i class="fas fa-folder-open text-muted opacity-25" style="font-size:4rem; margin-bottom:16px; display:block;"></i>
+                <h4 style="font-weight:800; color:var(--patient-text);">{{ __('messages.no_results_yet') ?? 'No results found in your account yet.' }}</h4>
+                <p style="color:var(--patient-text-muted);">{{ __('messages.results_will_appear_here') ?? 'Your medical reports will appear here once they are ready.' }}</p>
             </div>
         @else
-        
-        <div class="row">
-            @if($reservations->count() > 1)
-            <div class="col-12 mb-4">
-                <div class="card-custom p-3">
-                    <div class="d-flex align-items-center gap-3 flex-wrap">
-                        <span class="fw-bold text-muted small text-uppercase"><i class="fas fa-history me-1"></i> {{ __('messages.visit_history') ?? 'Visit History' }}:</span>
-                        @foreach($reservations as $res)
-                            <a href="?visit={{ $res->id }}" class="btn btn-sm {{ (isset($reservation) && $reservation->id == $res->id) ? 'btn-primary' : 'btn-outline-primary' }} rounded-pill px-3">
-                                {{ $res->analysis_date }} (#{{ $res->id }})
-                            </a>
-                        @endforeach
-                    </div>
-                </div>
-            </div>
-            @endif
 
-            <!-- Left Side: Reservation Summary & Results -->
+        <!-- Multi-visit switcher if available -->
+        @if($reservations->count() > 1)
+        <div class="patient-card-modern p-3 mb-4">
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+                <span style="font-size:0.85rem; font-weight:800; color:var(--patient-text-muted); text-transform:uppercase;">
+                    <i class="fas fa-history me-1"></i> {{ __('messages.visit_history') ?? 'Historique' }}:
+                </span>
+                @foreach($reservations as $res)
+                    <a href="?visit={{ $res->id }}" class="btn btn-sm rounded-pill px-3 fw-bold {{ (isset($reservation) && $reservation->id == $res->id) ? 'btn-primary' : 'btn-outline-primary' }}">
+                        {{ $res->analysis_date }} (#{{ $res->id }})
+                    </a>
+                @endforeach
+            </div>
+        </div>
+        @endif
+
+        <div class="row g-4">
+            <!-- Left Column: Visit details & Results -->
             <div class="col-lg-8">
                 
-                <!-- Status & Visit Info -->
-                <div class="card-custom">
-                    <div class="card-header-custom">
-                        <i class="fas fa-calendar-check text-primary"></i>
-                        {{ __('messages.visit_details') }}
+                <!-- Visit Details -->
+                <div class="patient-card-modern">
+                    <div class="patient-card-header">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="fas fa-calendar-check text-primary"></i>
+                            <span>{{ __('messages.visit_details') }}</span>
+                        </div>
+                        <span class="status-badge-patient status-{{ $reservation->status }}">
+                            <i class="fas fa-circle-dot"></i>
+                            {{ __('messages.' . $reservation->status) }}
+                        </span>
                     </div>
+
                     <div class="p-4">
-                        <div class="row g-4">
-                            <div class="col-md-3 col-6">
-                                <div class="info-label">{{ __('messages.visit_id') }}</div>
-                                <div class="info-value">#{{ $reservation->id }}</div>
+                        <div class="row g-3">
+                            <div class="col-6 col-md-3">
+                                <span style="font-size:0.8rem; color:var(--patient-text-muted); display:block;">{{ __('messages.visit_id') }}</span>
+                                <strong style="font-size:1.1rem; color:var(--patient-text);">#{{ $reservation->id }}</strong>
                             </div>
-                            <div class="col-md-3 col-6">
-                                <div class="info-label">{{ __('messages.date') }}</div>
-                                <div class="info-value">{{ $reservation->analysis_date }}</div>
+                            <div class="col-6 col-md-3">
+                                <span style="font-size:0.8rem; color:var(--patient-text-muted); display:block;">{{ __('messages.date') }}</span>
+                                <strong style="font-size:1.1rem; color:var(--patient-text);">{{ $reservation->analysis_date }}</strong>
                             </div>
-                            <div class="col-md-3 col-6">
-                                <div class="info-label">{{ __('messages.time') }}</div>
-                                <div class="info-value">{{ $reservation->time }}</div>
-                            </div>
-                            <div class="col-md-3 col-6">
-                                <div class="info-label">{{ __('messages.status') }}</div>
-                                <div>
-                                    <span class="status-pill status-{{ $reservation->status }}">
-                                        {{ __('messages.' . $reservation->status) }}
-                                    </span>
-                                </div>
+                            <div class="col-6 col-md-3">
+                                <span style="font-size:0.8rem; color:var(--patient-text-muted); display:block;">{{ __('messages.time') }}</span>
+                                <strong style="font-size:1.1rem; color:var(--patient-text);">{{ $reservation->time }}</strong>
                             </div>
                             @if($reservation->doctor)
-                            <div class="col-md-3 col-6">
-                                <div class="info-label">{{ __('messages.referred_by') }}</div>
-                                <div class="info-value text-primary">
-                                    <i class="fas fa-user-md me-1"></i>
-                                    {{ $reservation->doctor->name }}
-                                </div>
-                                <div class="text-muted small">{{ $reservation->doctor->specialty }}</div>
+                            <div class="col-6 col-md-3">
+                                <span style="font-size:0.8rem; color:var(--patient-text-muted); display:block;">{{ __('messages.referred_by') }}</span>
+                                <strong style="font-size:1rem; color:var(--patient-primary);">Dr. {{ $reservation->doctor->name }}</strong>
                             </div>
                             @endif
                         </div>
                     </div>
                 </div>
 
-                <!-- Results Section -->
-                <div class="card-custom">
-                    <div class="card-header-custom">
-                        <i class="fas fa-file-medical text-success"></i>
-                        {{ __('messages.medical_results') }}
+                <!-- Medical Results Download Box -->
+                <div class="patient-card-modern">
+                    <div class="patient-card-header">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="fas fa-file-medical text-success"></i>
+                            <span>{{ __('messages.medical_results') }}</span>
+                        </div>
                     </div>
-                    <div class="p-4">
 
-                @if($reservation->result_file_path || $hasDbResults)
-                    <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-4 bg-light p-4 rounded-4">
-                        <div class="flex-grow-1">
-                            <h5 class="fw-bold mb-1">{{ __('messages.results_ready_title') }}</h5>
-                            <p class="text-muted mb-0 small">{{ __('messages.results_ready_desc') }}</p>
-                        </div>
-                        <div class="d-flex flex-column flex-sm-row gap-2">
-                            @if($reservation->result_file_path)
-                                <a href="{{ route('patient.download', $reservation->id) }}" target="_blank" class="btn-download">
-                                    <i class="fas fa-file-upload"></i>
-                                    {{ __('messages.view_and_download') }}
-                                </a>
-                            @endif
-                            
-                            @if($hasDbResults)
-                                <a href="{{ route('reservation.pdf', ['id' => $reservation->id, 'type' => 'confirmed']) }}" target="_blank" class="btn-download" style="background: var(--success-color);">
-                                    <i class="fas fa-file-medical"></i>
-                                    {{ __('messages.medical_report_pdf') }}
-                                </a>
-                            @endif
-                        </div>
-                    </div>
-                @else
-                    <div class="empty-state">
-                        <i class="fas fa-hourglass-half"></i>
-                        <h5>{{ __('messages.results_pending_title') }}</h5>
-                        <p>{{ __('messages.results_pending_desc') }}</p>
-                    </div>
-                @endif
+                    <div class="p-4">
+                        @if($reservation->result_file_path || $hasDbResults)
+                            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 p-4 rounded-4" style="background:#F0FDF4; border:1px solid #BBF7D0;">
+                                <div>
+                                    <h4 style="font-weight:900; color:#166534; font-size:1.2rem; margin-bottom:4px;">
+                                        <i class="fas fa-circle-check me-1"></i> {{ __('messages.results_ready_title') }}
+                                    </h4>
+                                    <p style="color:#15803D; margin:0; font-size:0.95rem;">
+                                        {{ __('messages.results_ready_desc') }}
+                                    </p>
+                                </div>
+                                <div class="d-flex flex-wrap gap-2">
+                                    @if($reservation->result_file_path)
+                                        <a href="{{ route('patient.download', $reservation->id) }}" target="_blank" class="btn-patient-cta emerald">
+                                            <i class="fas fa-file-arrow-down"></i>
+                                            <span>{{ __('messages.view_and_download') }}</span>
+                                        </a>
+                                    @endif
+
+                                    @if($hasDbResults)
+                                        <a href="{{ route('reservation.pdf', ['id' => $reservation->id, 'type' => 'confirmed']) }}" target="_blank" class="btn-patient-cta primary">
+                                            <i class="fas fa-file-pdf"></i>
+                                            <span>{{ __('messages.medical_report_pdf') }}</span>
+                                        </a>
+                                    @endif
+                                </div>
+                            </div>
+                        @else
+                            <div class="text-center py-4">
+                                <i class="fas fa-hourglass-half text-warning" style="font-size:2.5rem; margin-bottom:12px; display:block;"></i>
+                                <h5 style="font-weight:800; color:var(--patient-text);">{{ __('messages.results_pending_title') }}</h5>
+                                <p style="color:var(--patient-text-muted); margin:0;">{{ __('messages.results_pending_desc') }}</p>
+                            </div>
+                        @endif
                     </div>
                 </div>
 
-                <!-- Preparation Section -->
-                <div class="card-custom">
-                    <div class="card-header-custom">
-                        <i class="fas fa-clipboard-list text-warning"></i>
-                        {{ __('messages.prep_and_instructions') }}
+                <!-- Preparation Instructions for analyses in reservation -->
+                <div class="patient-card-modern">
+                    <div class="patient-card-header">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="fas fa-clipboard-list text-warning"></i>
+                            <span>{{ __('messages.prep_and_instructions') }}</span>
+                        </div>
                     </div>
+
                     <div>
                         @foreach($reservation->reservationAnalyses as $resAnalysis)
-                            <div class="analysis-item">
-                                <div>
-                                    <div class="fw-bold">{{ $resAnalysis->analyse->name }}</div>
+                            <div class="analysis-instruction-row">
+                                <div style="flex:1;">
+                                    <strong style="color:var(--patient-text); font-size:1rem; display:block;">{{ $resAnalysis->analyse->name }}</strong>
                                     @if($resAnalysis->analyse->preparation_instructions)
-                                        <div class="prep-instructions">
-                                            <i class="fas fa-info-circle me-1"></i>
-                                            {{ $resAnalysis->analyse->preparation_instructions }}
+                                        <div class="prep-callout">
+                                            <i class="fas fa-triangle-exclamation mt-1"></i>
+                                            <span>{{ $resAnalysis->analyse->preparation_instructions }}</span>
                                         </div>
                                     @else
-                                        <div class="text-muted small mt-1">{{ __('messages.no_specific_instructions') }}</div>
+                                        <span style="font-size:0.85rem; color:var(--patient-text-muted); display:block; margin-top:4px;">
+                                            {{ __('messages.no_specific_instructions') }}
+                                        </span>
                                     @endif
                                 </div>
-                                <span class="badge bg-light text-dark">{{ $resAnalysis->analyse->category ?? __('messages.analysis') }}</span>
+                                <span class="badge rounded-pill bg-light text-dark px-3 py-2 border" style="font-size:0.8rem;">
+                                    {{ $resAnalysis->analyse->category ?? __('messages.analysis') }}
+                                </span>
                             </div>
                         @endforeach
                     </div>
@@ -408,58 +480,64 @@
 
             </div>
 
-            <!-- Right Side: Reports & Alerts -->
+            <!-- Right Column: Reports & Notifications -->
             <div class="col-lg-4">
                 
-                <!-- Detailed Reports -->
-                <div class="card-custom">
-                    <div class="card-header-custom">
-                        <i class="fas fa-eye text-primary"></i>
-                        {{ __('messages.visualize_reports') }}
+                <!-- Quick Reports Actions -->
+                <div class="patient-card-modern">
+                    <div class="patient-card-header">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="fas fa-eye text-primary"></i>
+                            <span>{{ __('messages.visualize_reports') }}</span>
+                        </div>
                     </div>
-                    <div class="p-4 d-grid gap-2">
-                        <a href="{{ route('report.view', ['id' => $reservation->id, 'type' => 'confirmed']) }}" target="_blank" class="btn btn-outline-secondary w-100 rounded-3 text-start">
-                            <i class="fas fa-file-invoice me-2 text-primary"></i> {{ __('messages.appointment_confirmation') }}
+                    <div class="p-3 d-grid gap-2">
+                        <a href="{{ route('report.view', ['id' => $reservation->id, 'type' => 'confirmed']) }}" target="_blank" class="btn btn-outline-secondary text-start p-3 rounded-3 d-flex align-items-center justify-content-between">
+                            <span class="fw-bold"><i class="fas fa-file-invoice text-primary me-2"></i> {{ __('messages.appointment_confirmation') }}</span>
+                            <i class="fas fa-arrow-up-right-from-square small text-muted"></i>
                         </a>
-                        
 
                         @if($diagIsChecked)
-                            <a href="{{ route('report.view', ['id' => $reservation->id, 'report_type' => 'eligibility']) }}" target="_blank" class="btn btn-outline-secondary w-100 rounded-3 text-start">
-                                <i class="fas fa-notes-medical me-2 text-primary"></i> {{ __('messages.eligibility_report') }}
+                            <a href="{{ route('report.view', ['id' => $reservation->id, 'report_type' => 'eligibility']) }}" target="_blank" class="btn btn-outline-secondary text-start p-3 rounded-3 d-flex align-items-center justify-content-between">
+                                <span class="fw-bold"><i class="fas fa-notes-medical text-primary me-2"></i> {{ __('messages.eligibility_report') }}</span>
+                                <i class="fas fa-arrow-up-right-from-square small text-muted"></i>
                             </a>
                         @endif
                     </div>
                 </div>
 
-                <!-- Smart Alerts -->
-                <div class="card-custom">
-                    <div class="card-header-custom">
-                        <i class="fas fa-bell text-warning"></i>
-                        {{ __('messages.notifications_alerts') }}
+                <!-- Notifications & Smart Reminders -->
+                <div class="patient-card-modern">
+                    <div class="patient-card-header">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="fas fa-bell text-warning"></i>
+                            <span>{{ __('messages.notifications_alerts') }}</span>
+                        </div>
                     </div>
-                    <div class="p-4">
+                    <div class="p-3">
                         @if($reservation->reminders->count() > 0)
                             @foreach($reservation->reminders as $reminder)
-                                <div class="alert-item alert-info">
-                                    <i class="fas fa-info-circle mt-1"></i>
+                                <div class="alert-card-smart" style="background:#EFF6FF; border-color:#BFDBFE;">
+                                    <i class="fas fa-info-circle text-primary mt-1"></i>
                                     <div>
-                                        <div class="fw-bold small">{{ $reminder->sent_at }}</div>
-                                        <div class="small">{{ $reminder->message }}</div>
+                                        <div style="font-size:0.75rem; color:var(--patient-text-muted); font-weight:700;">{{ $reminder->sent_at }}</div>
+                                        <div style="font-size:0.9rem; color:var(--patient-text); line-height:1.4;">{{ $reminder->message }}</div>
                                     </div>
                                 </div>
                             @endforeach
                         @else
-                            <div class="empty-state py-2">
-                                <p class="small mb-0">{{ __('messages.no_recent_notifications') }}</p>
+                            <div class="text-center py-3 text-muted small">
+                                <i class="far fa-bell-slash mb-2" style="font-size:1.5rem; opacity:0.3; display:block;"></i>
+                                {{ __('messages.no_recent_notifications') }}
                             </div>
                         @endif
-                        
-                        <!-- Fixed Smart Instruction (Example) -->
-                        <div class="alert-item alert-success">
-                            <i class="fas fa-check-double mt-1"></i>
+
+                        <!-- Health Tip -->
+                        <div class="alert-card-smart" style="background:#F0FDF4; border-color:#BBF7D0;">
+                            <i class="fas fa-heart-pulse text-success mt-1"></i>
                             <div>
-                                <div class="fw-bold small">{{ __('messages.smart_tip') }}</div>
-                                <div class="small">{{ __('messages.drink_water_tip') }}</div>
+                                <strong style="display:block; color:#15803D; font-size:0.88rem;">{{ __('messages.smart_tip') }}</strong>
+                                <span style="font-size:0.85rem; color:#166534;">{{ __('messages.drink_water_tip') }}</span>
                             </div>
                         </div>
                     </div>
@@ -468,6 +546,7 @@
             </div>
         </div>
         @endif
+
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
