@@ -165,19 +165,19 @@ body {
     font-size: 0.75rem;
     cursor: pointer;
 }
-.btn-auth-pill {
+.header-user-avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
     background: #0066FF;
     color: #fff;
-    border: none;
-    padding: 5px 12px;
-    border-radius: var(--radius-full);
-    font-size: 0.75rem;
-    font-weight: 700;
-    cursor: pointer;
+    font-weight: 800;
+    font-size: 0.95rem;
     display: flex;
     align-items: center;
-    gap: 5px;
-    box-shadow: 0 3px 10px rgba(0, 102, 255, 0.25);
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 102, 255, 0.3);
 }
 
 /* SaaS Lab Switcher Bar */
@@ -559,12 +559,6 @@ body {
     font-weight: 700;
     color: var(--primary);
 }
-.auth-hint-tag {
-    font-size: 0.7rem;
-    color: #0066FF;
-    cursor: pointer;
-    text-decoration: underline;
-}
 .form-group {
     margin-bottom: 12px;
 }
@@ -696,7 +690,7 @@ body {
 }
 
 /* ==========================================================================
-   Results Archive & Timeline (Requested)
+   Results Archive & Timeline
    ========================================================================== */
 .archive-filter-bar {
     display: flex;
@@ -818,23 +812,6 @@ body {
     font-size: 0.75rem;
     color: #334155;
     line-height: 1.5;
-}
-
-.demo-auth-pill-row {
-    margin-top: 8px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-.chip-demo-fill {
-    background: #EFF6FF;
-    border: 1px solid #93C5FD;
-    color: #1D4ED8;
-    padding: 3px 8px;
-    border-radius: var(--radius-full);
-    font-size: 0.72rem;
-    font-weight: 700;
-    cursor: pointer;
 }
 
 /* ==========================================================================
@@ -967,52 +944,14 @@ body {
 }
 
 /* ==========================================================================
-   FULLSCREEN LUXURY AUTH GATE VIEW (Requested)
+   GLOBAL AUTH SCREEN IN PROFILE TAB
    ========================================================================== */
-.auth-gate-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(11, 30, 54, 0.7);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-    z-index: 5000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 16px;
-    animation: fadeIn 0.25s ease;
-}
-.auth-gate-card {
+.auth-profile-card {
     background: #ffffff;
     border: 1px solid rgba(186, 215, 248, 0.8);
     border-radius: var(--radius-xl);
-    max-width: 420px;
-    width: 100%;
-    padding: 24px 20px;
-    box-shadow: 0 20px 40px rgba(0, 50, 150, 0.2);
-    position: relative;
-    max-height: 90vh;
-    overflow-y: auto;
-}
-.btn-close-gate {
-    position: absolute;
-    top: 16px;
-    left: 16px;
-    background: #F1F5F9;
-    border: none;
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    font-size: 1rem;
-    color: #64748B;
-    cursor: pointer;
-}
-.auth-gate-header {
-    text-align: center;
-    margin-bottom: 14px;
+    padding: 24px 18px;
+    box-shadow: 0 10px 30px rgba(0, 50, 150, 0.08);
 }
 .auth-gate-badge {
     display: inline-block;
@@ -1024,20 +963,12 @@ body {
     border-radius: var(--radius-full);
     margin-bottom: 8px;
 }
-.auth-gate-header h2 {
-    font-size: 1.25rem;
-    font-weight: 800;
-    color: #0B1E36;
-    margin-bottom: 4px;
-}
-
-/* Quick Demo Box (admin / admin123) */
 .quick-demo-box {
     background: linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%);
     border: 1px dashed #3B82F6;
     border-radius: var(--radius-md);
-    padding: 10px 12px;
-    margin-bottom: 14px;
+    padding: 12px;
+    margin: 14px 0;
     cursor: pointer;
     transition: transform 0.15s ease;
 }
@@ -1056,22 +987,20 @@ body {
 }
 .quick-demo-box strong {
     display: block;
-    font-size: 0.8rem;
+    font-size: 0.82rem;
     color: #1E3A8A;
 }
 .demo-creds-preview {
-    font-size: 0.72rem;
+    font-size: 0.74rem;
     color: #2563EB;
     margin-top: 3px;
 }
 .demo-creds-preview code {
     background: #fff;
-    padding: 1px 5px;
+    padding: 1px 6px;
     border-radius: 4px;
-    font-weight: 700;
+    font-weight: 800;
 }
-
-/* Gate Auth Tabs */
 .gate-auth-tabs {
     display: flex;
     gap: 8px;

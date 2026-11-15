@@ -1,6 +1,6 @@
 /**
  * LabNexa Mobile Native Application Logic (SaaS Multi-Lab Edition)
- * Standalone offline-capable client with live backend sync & multi-tenant laboratory network
+ * Clean, Unified World-Class Architecture
  */
 
 const BASE_API_URL = "http://zsw8k8c4k8o4kw008skssgkc.194.34.232.105.sslip.io";
@@ -143,6 +143,7 @@ let activeCategory = "all";
 let activeWilayaFilter = "all";
 let currentPatient = null;
 let activeResultsArchiveFilter = "all";
+let activeAuthTab = "login"; // "login" or "register"
 
 // DOM Ready initialization
 document.addEventListener("DOMContentLoaded", () => {
@@ -186,14 +187,11 @@ function updateActiveLabUI() {
     const summary = document.getElementById("activeLabWilayaSummary");
     if (summary) summary.textContent = `${activeLab.wilaya} • تقييم ⭐ ${activeLab.rating}`;
 
-    const profTitle = document.getElementById("profileCurrentLabTitle");
-    if (profTitle) profTitle.textContent = title;
-
     renderCurrentLabPreview();
     renderBookingLabCards();
 }
 
-// Render Explicit Laboratory Cards inside Booking Step 1 (Requested)
+// Render Explicit Laboratory Cards inside Booking Step 1
 function renderBookingLabCards() {
     const container = document.getElementById("bookingLabCardsList");
     if (!container) return;
@@ -231,7 +229,7 @@ function selectBookingLab(labId) {
         try { localStorage.setItem("labnexa_active_lab_id", labId); } catch(e){}
     }
     updateActiveLabUI();
-    showToast(`تم اختيار: ${activeLab.name}`);
+    showToast(`تم اختيار المخبر: ${activeLab.name}`);
 }
 
 function renderCurrentLabPreview() {
@@ -334,56 +332,8 @@ function selectLaboratory(labId) {
 }
 
 // ==========================================================================
-// 3. FULLSCREEN LUXURY AUTH GATE & PATIENT SESSION
+// 3. CLEAN GLOBAL AUTHENTICATION & SINGLE ACCOUNT TAB
 // ==========================================================================
-
-function handleHeaderAuthClick() {
-    if (currentPatient) {
-        switchTab("profile");
-    } else {
-        showAuthGate();
-    }
-}
-
-function showAuthGate() {
-    const gate = document.getElementById("authGateView");
-    if (gate) {
-        gate.style.display = "flex";
-        window.scrollTo({ top: 0, behavior: "smooth" });
-    }
-}
-
-function hideAuthGate() {
-    const gate = document.getElementById("authGateView");
-    if (gate) gate.style.display = "none";
-}
-
-function switchGateAuthTab(type) {
-    const tabLogin = document.getElementById("gateTabLoginBtn");
-    const tabReg = document.getElementById("gateTabRegBtn");
-    const formLogin = document.getElementById("gateLoginForm");
-    const formReg = document.getElementById("gateRegisterForm");
-
-    if (type === "login") {
-        tabLogin.classList.add("active");
-        tabReg.classList.remove("active");
-        formLogin.style.display = "block";
-        formReg.style.display = "none";
-    } else {
-        tabReg.classList.add("active");
-        tabLogin.classList.remove("active");
-        formReg.style.display = "block";
-        formLogin.style.display = "none";
-    }
-}
-
-// Quick Fill for Requested Admin Patient Account (admin / admin123)
-function fillDemoAdminCredentials() {
-    switchGateAuthTab('login');
-    document.getElementById("gate_login_id").value = "admin";
-    document.getElementById("gate_login_pass").value = "admin123";
-    showToast("تم إدراج بيانات حساب المريض المعتمد (admin / admin123)");
-}
 
 function loadPatientSession() {
     try {
@@ -396,30 +346,27 @@ function loadPatientSession() {
 }
 
 function updateAuthUI() {
-    const authBtnLabel = document.getElementById("headerAuthLabel");
-    const authBtnIcon = document.getElementById("headerAuthIcon");
+    const headerAvatar = document.getElementById("headerUserAvatarBadge");
     const homeUserCard = document.getElementById("homeUserCard");
     const homeUserName = document.getElementById("homeUserName");
     const homeUserAvatar = document.getElementById("homeUserAvatar");
     const homeUserMeta = document.getElementById("homeUserMeta");
-    const bookingHint = document.getElementById("bookingAuthHint");
 
     if (currentPatient) {
         const firstLetter = currentPatient.name ? currentPatient.name.charAt(0) : "م";
-        if (authBtnLabel) authBtnLabel.textContent = currentPatient.name.split(" ")[0];
-        if (authBtnIcon) authBtnIcon.textContent = "👤";
+        if (headerAvatar) {
+            headerAvatar.style.display = "flex";
+            headerAvatar.textContent = firstLetter;
+        }
         if (homeUserCard) homeUserCard.style.display = "flex";
         if (homeUserName) homeUserName.textContent = currentPatient.name;
         if (homeUserAvatar) homeUserAvatar.textContent = firstLetter;
         if (homeUserMeta) homeUserMeta.textContent = `ملف طبي: #${currentPatient.file_number || 'NX-ADM-001'} • ${currentPatient.wilaya || 'الجزائر'}`;
-        if (bookingHint) bookingHint.style.display = "none";
 
         prefillBookingForm();
     } else {
-        if (authBtnLabel) authBtnLabel.textContent = "دخول";
-        if (authBtnIcon) authBtnIcon.textContent = "👤";
+        if (headerAvatar) headerAvatar.style.display = "none";
         if (homeUserCard) homeUserCard.style.display = "none";
-        if (bookingHint) bookingHint.style.display = "block";
     }
 
     renderProfileSection();
@@ -436,18 +383,187 @@ function prefillBookingForm() {
     if (ageInput && !ageInput.value) ageInput.value = currentPatient.age || "";
 }
 
-// Login Handler with Official Platform Admin Patient Account Support (Requested)
-async function handleGateLoginSubmit(event) {
+// Render Profile Tab (Single source of truth: Auth Form if guest, Patient Dossier if logged in)
+function renderProfileSection() {
+    const container = document.getElementById("profileMainContainer");
+    if (!container) return;
+
+    if (!currentPatient) {
+        // RENDER LUXURY WORLD-CLASS AUTHENTICATION SCREEN IN TAB 5
+        container.innerHTML = `
+            <div class="auth-profile-card">
+                <div style="text-align: center; margin-bottom: 12px;">
+                    <div class="auth-gate-badge">🛡️ بوابة حساب المريض المعتمد</div>
+                    <h2 style="font-size: 1.25rem; font-weight: 800; color: #0B1E36; margin: 4px 0;">تسجيل الدخول إلى حسابك</h2>
+                    <p class="text-muted text-sm">سجّل دخولك لمتابعة ملفك الطبي وأرشيف نتائجك وحجز مواعيدك بكل سرية</p>
+                </div>
+
+                <!-- 1-Click Demo Fill for admin / admin123 -->
+                <div class="quick-demo-box" onclick="quickFillAndLoginAdmin()">
+                    <div class="demo-badge-sparkle">⚡ الدخول السريع بحساب المنصة المعتمد</div>
+                    <strong>اضغط هنا للدخول الفوري ببيانات المريض:</strong>
+                    <div class="demo-creds-preview">المعرف: <code>admin</code> • كلمة المرور: <code>admin123</code></div>
+                </div>
+
+                <!-- Auth Switcher Tabs -->
+                <div class="gate-auth-tabs">
+                    <button class="gate-tab-btn ${activeAuthTab === 'login' ? 'active' : ''}" onclick="toggleAuthTab('login')">تسجيل الدخول</button>
+                    <button class="gate-tab-btn ${activeAuthTab === 'register' ? 'active' : ''}" onclick="toggleAuthTab('register')">إنشاء حساب مريض</button>
+                </div>
+
+                <!-- Login Form -->
+                <form id="profileLoginForm" style="display: ${activeAuthTab === 'login' ? 'block' : 'none'};" onsubmit="handleProfileLoginSubmit(event)">
+                    <div class="form-group">
+                        <label>رقم الهاتف، البريد، أو المعرف *</label>
+                        <input type="text" id="prof_login_id" class="form-input" required placeholder="admin أو 0550123456 أو البريد">
+                    </div>
+                    <div class="form-group">
+                        <label>كلمة المرور *</label>
+                        <input type="password" id="prof_login_pass" class="form-input" required placeholder="••••••••">
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; font-size: 0.75rem;">
+                        <label><input type="checkbox" checked> تذكر بياناتي</label>
+                        <a href="javascript:void(0)" onclick="alert('لإعادة تعيين كلمة المرور، يرجى التواصل مع مخبر التحاليل')" style="color: #0066FF;">نسيت كلمة المرور؟</a>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block btn-lg">دخول إلى حسابي الطبي 🔐</button>
+                </form>
+
+                <!-- Register Form -->
+                <form id="profileRegisterForm" style="display: ${activeAuthTab === 'register' ? 'block' : 'none'};" onsubmit="handleProfileRegisterSubmit(event)">
+                    <div class="form-group">
+                        <label>الاسم الكامل للمريض *</label>
+                        <input type="text" id="prof_reg_name" class="form-input" required placeholder="مثال: محمد بلقاسم">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>رقم الهاتف *</label>
+                            <input type="tel" id="prof_reg_phone" class="form-input" required placeholder="05 / 06 / 07...">
+                        </div>
+                        <div class="form-group">
+                            <label>الولاية *</label>
+                            <select id="prof_reg_wilaya" class="form-input">
+                                <option value="الجزائر">16 - الجزائر العاصمة</option>
+                                <option value="وهران">31 - وهران</option>
+                                <option value="قسنطينة">25 - قسنطينة</option>
+                                <option value="سطيف">19 - سطيف</option>
+                                <option value="البليدة">09 - البليدة</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>العمر / السن</label>
+                            <input type="text" id="prof_reg_age" class="form-input" placeholder="مثال: 34">
+                        </div>
+                        <div class="form-group">
+                            <label>الجنس</label>
+                            <select id="prof_reg_gender" class="form-input">
+                                <option value="male">ذكر</option>
+                                <option value="female">أنثى</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>كلمة المرور *</label>
+                        <input type="password" id="prof_reg_pass" class="form-input" required minlength="6" placeholder="6 أحرف أو أرقام على الأقل">
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block btn-lg">إنشاء حساب مريض فوري ✨</button>
+                </form>
+
+                <div class="auth-trust-footer">
+                    <span>🔒 مشفر ومحمي بنظام أمني 256-Bit • مطابق لمعايير سرية البيانات الطبية</span>
+                </div>
+            </div>
+        `;
+        return;
+    }
+
+    // RENDER LOGGED-IN PATIENT DIGITAL HEALTH DOSSIER
+    const pastBookings = getSavedBookings();
+    const bookingsListHtml = pastBookings.length > 0 
+        ? pastBookings.slice(0, 3).map(b => `
+            <div style="padding: 8px 0; border-bottom: 1px solid #F1F5F9; font-size: 0.8rem;">
+                <div style="display: flex; justify-content: space-between;">
+                    <strong>🎟️ ${b.code}</strong>
+                    <span style="color: #059669; font-weight: 700;">${b.totalPrice} دج</span>
+                </div>
+                <div style="color: #64748B; font-size: 0.72rem;">${b.date} (${b.time}) • ${b.labName || activeLab.name}</div>
+            </div>
+        `).join("")
+        : '<div class="text-muted text-sm">لا توجد حجوزات مسجلة بعد. يمكنك حجز موعدك من تبويب الحجز.</div>';
+
+    container.innerHTML = `
+        <div class="card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div class="user-avatar-circle" style="width: 48px; height: 48px; font-size: 1.3rem;">
+                        ${currentPatient.name.charAt(0)}
+                    </div>
+                    <div>
+                        <h3 style="font-size: 1.05rem; margin-bottom: 2px;">${currentPatient.name}</h3>
+                        <small class="text-muted">رقم الملف: #${currentPatient.file_number} • ${currentPatient.wilaya}</small>
+                    </div>
+                </div>
+                <!-- Clean Logout Button -->
+                <button class="btn btn-sm btn-outline" style="border-color:#DC2626;color:#DC2626;" onclick="logoutPatient()">تسجيل الخروج 🚪</button>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px;">
+                <div style="background: #F8FAFC; padding: 10px; border-radius: 8px;">
+                    <small class="text-muted d-block">الهاتف المسجل:</small>
+                    <strong>${currentPatient.phone}</strong>
+                </div>
+                <div style="background: #F8FAFC; padding: 10px; border-radius: 8px;">
+                    <small class="text-muted d-block">المخبر المعتمد:</small>
+                    <strong style="font-size: 0.75rem;">${activeLab.wilaya}</strong>
+                </div>
+            </div>
+
+            <h4 style="font-size: 0.9rem; margin-bottom: 8px; color: #0066FF;">📋 آخر المواعيد والحجوزات</h4>
+            <div style="background: #FAFCFF; border: 1px solid #E2E8F0; border-radius: 8px; padding: 10px; margin-bottom: 14px;">
+                ${bookingsListHtml}
+            </div>
+
+            <div style="display: flex; gap: 8px;">
+                <button class="btn btn-primary btn-block btn-sm" onclick="switchTab('results')">عرض أرشيف نتائجي 📊</button>
+                <button class="btn btn-outline btn-block btn-sm" onclick="openLabSelectorModal()">تغيير المخبر 🏥</button>
+            </div>
+        </div>
+    `;
+}
+
+function toggleAuthTab(tab) {
+    activeAuthTab = tab;
+    renderProfileSection();
+}
+
+function quickFillAndLoginAdmin() {
+    currentPatient = {
+        name: "محمد بلقاسم (Patient Admin)",
+        phone: "0550123456",
+        email: "admin@labnexa.dz",
+        wilaya: "الجزائر العاصمة",
+        file_number: "NX-ADM-001",
+        age: "36 سنة",
+        gender: "male",
+        isMasterAdmin: true,
+        logged_at: new Date().toISOString()
+    };
+    try { localStorage.setItem("labnexa_patient_session", JSON.stringify(currentPatient)); } catch(e){}
+    updateAuthUI();
+    showToast("تم الدخول بنجاح بحساب المريض المعتمد (admin)");
+}
+
+async function handleProfileLoginSubmit(event) {
     event.preventDefault();
-    const identifier = document.getElementById("gate_login_id").value.trim();
-    const password = document.getElementById("gate_login_pass").value.trim();
+    const identifier = document.getElementById("prof_login_id").value.trim();
+    const password = document.getElementById("prof_login_pass").value.trim();
 
     if (!identifier || !password) {
         showToast("يرجى إدخال المعرف وكلمة المرور");
         return;
     }
 
-    // Check if logging in as Master Admin Patient (admin / admin123 or 0600000000 / admin123)
     const isAdminAccount = (identifier.toLowerCase() === "admin" || identifier === "0600000000" || identifier === "0550123456") && password === "admin123";
 
     if (isAdminAccount) {
@@ -474,30 +590,28 @@ async function handleGateLoginSubmit(event) {
         };
     }
 
-    // Save session
     try { localStorage.setItem("labnexa_patient_session", JSON.stringify(currentPatient)); } catch(e){}
 
-    // Try posting to API in background
+    // Background sync to backend API
     try {
         const formData = new FormData();
         formData.append("login", identifier);
         formData.append("password", password);
         fetch(`${BASE_API_URL}/api/v1/patient/login`, { method: "POST", body: formData }).catch(e => {});
-    } catch (e) {}
+    } catch(e){}
 
     updateAuthUI();
-    hideAuthGate();
-    showToast(`مرحباً بك ${currentPatient.name} في شبكة LabNexa`);
+    showToast(`مرحباً بك ${currentPatient.name} في حسابك الطبي`);
 }
 
-async function handleGateRegisterSubmit(event) {
+async function handleProfileRegisterSubmit(event) {
     event.preventDefault();
-    const name = document.getElementById("gate_reg_name").value.trim();
-    const phone = document.getElementById("gate_reg_phone").value.trim();
-    const wilaya = document.getElementById("gate_reg_wilaya").value;
-    const age = document.getElementById("gate_reg_age").value.trim();
-    const gender = document.getElementById("gate_reg_gender").value;
-    const password = document.getElementById("gate_reg_pass").value.trim();
+    const name = document.getElementById("prof_reg_name").value.trim();
+    const phone = document.getElementById("prof_reg_phone").value.trim();
+    const wilaya = document.getElementById("prof_reg_wilaya").value;
+    const age = document.getElementById("prof_reg_age").value.trim();
+    const gender = document.getElementById("prof_reg_gender").value;
+    const password = document.getElementById("prof_reg_pass").value.trim();
 
     if (!name || !phone || !password) {
         showToast("يرجى ملء جميع الحقول الإلزامية");
@@ -516,7 +630,6 @@ async function handleGateRegisterSubmit(event) {
 
     try { localStorage.setItem("labnexa_patient_session", JSON.stringify(currentPatient)); } catch(e){}
 
-    // Post to API
     try {
         const formData = new FormData();
         formData.append("name", name);
@@ -527,86 +640,15 @@ async function handleGateRegisterSubmit(event) {
     } catch(e){}
 
     updateAuthUI();
-    hideAuthGate();
-    showToast(`تم إنشاء حسابك بنجاح! مرحباً بك`);
+    showToast(`تم إنشاء حسابك الطبي بنجاح! مرحباً بك`);
 }
 
-// Logout button smoothly transitions to the luxury Auth Gate (Requested)
+// Clean Logout: resets patient session, updates UI, and renders the luxury Login screen in place!
 function logoutPatient() {
     currentPatient = null;
     try { localStorage.removeItem("labnexa_patient_session"); } catch(e){}
     updateAuthUI();
     showToast("تم تسجيل الخروج بنجاح");
-    // Directly open the luxury Auth Gate
-    showAuthGate();
-}
-
-function renderProfileSection() {
-    const container = document.getElementById("profileUserSection");
-    if (!container) return;
-
-    if (!currentPatient) {
-        container.innerHTML = `
-            <div class="card text-center" style="padding: 24px;">
-                <div style="font-size: 2.5rem; margin-bottom: 8px;">🔐</div>
-                <h3 style="margin-bottom: 6px;">بوابة حساب المريض الطبية</h3>
-                <p class="text-muted text-sm" style="margin-bottom: 16px;">
-                    سجّل الدخول لمتابعة ملفاتك الطبية وأرشيف الفحوصات وحجز مواعيدك السريعة.
-                </p>
-                <button class="btn btn-primary btn-block btn-lg" onclick="showAuthGate()">
-                    تسجيل الدخول أو فتح حساب جديد 👤
-                </button>
-            </div>
-        `;
-        return;
-    }
-
-    const pastBookings = getSavedBookings();
-    const bookingsListHtml = pastBookings.length > 0 
-        ? pastBookings.slice(0, 3).map(b => `
-            <div style="padding: 8px 0; border-bottom: 1px solid #F1F5F9; font-size: 0.8rem;">
-                <div style="display: flex; justify-content: space-between;">
-                    <strong>🎟️ ${b.code}</strong>
-                    <span style="color: #059669; font-weight: 700;">${b.totalPrice} دج</span>
-                </div>
-                <div style="color: #64748B; font-size: 0.72rem;">${b.date} (${b.time}) • ${b.labName || activeLab.name}</div>
-            </div>
-        `).join("")
-        : '<div class="text-muted text-sm">لا توجد حجوزات مسجلة بعد.</div>';
-
-    container.innerHTML = `
-        <div class="card">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
-                <div style="display: flex; align-items: center; gap: 12px;">
-                    <div class="user-avatar-circle" style="width: 48px; height: 48px; font-size: 1.3rem;">
-                        ${currentPatient.name.charAt(0)}
-                    </div>
-                    <div>
-                        <h3 style="font-size: 1.05rem; margin-bottom: 2px;">${currentPatient.name}</h3>
-                        <small class="text-muted">رقم الملف: #${currentPatient.file_number} • ${currentPatient.wilaya}</small>
-                    </div>
-                </div>
-                <!-- Logout Button transitions to Luxury Auth Gate -->
-                <button class="btn btn-sm btn-outline" style="border-color:#DC2626;color:#DC2626;" onclick="logoutPatient()">تسجيل الخروج 🚪</button>
-            </div>
-
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px;">
-                <div style="background: #F8FAFC; padding: 10px; border-radius: 8px;">
-                    <small class="text-muted d-block">الهاتف المسجل:</small>
-                    <strong>${currentPatient.phone}</strong>
-                </div>
-                <div style="background: #F8FAFC; padding: 10px; border-radius: 8px;">
-                    <small class="text-muted d-block">المخبر المعتمد:</small>
-                    <strong style="font-size: 0.75rem;">${activeLab.wilaya}</strong>
-                </div>
-            </div>
-
-            <h4 style="font-size: 0.9rem; margin-bottom: 8px; color: #0066FF;">📋 آخر المواعيد والحجوزات</h4>
-            <div style="background: #FAFCFF; border: 1px solid #E2E8F0; border-radius: 8px; padding: 10px;">
-                ${bookingsListHtml}
-            </div>
-        </div>
-    `;
 }
 
 // ==========================================================================
@@ -637,7 +679,15 @@ function switchTab(tabId) {
         prefillBookingForm();
         renderBookingLabCards();
     }
-    if (tabId === "profile") renderProfileSection();
+    if (tabId === "profile") {
+        renderProfileSection();
+    }
+    if (tabId === "results") {
+        if (currentPatient && currentPatient.isMasterAdmin) {
+            document.getElementById("trackInput").value = "admin";
+            fetchResults();
+        }
+    }
 
     window.scrollTo({ top: 0, behavior: "smooth" });
 }
@@ -769,7 +819,6 @@ async function handleBookingSubmit(event) {
     const time = document.getElementById("book_time").value;
     const isHome = document.getElementById("book_home_service").checked;
 
-    // Use explicitly chosen laboratory in booking Step 1
     const chosenLab = LABORATORIES_NETWORK.find(l => l.id === bookingChosenLabId) || activeLab;
 
     if (!name || !phone || !date) {
@@ -800,7 +849,6 @@ async function handleBookingSubmit(event) {
 
     saveBookingLocally(bookingData);
 
-    // Background sync to API
     try {
         const formData = new FormData();
         formData.append("name", name);
@@ -878,10 +926,9 @@ function getSavedBookings() {
 }
 
 // ==========================================================================
-// 5. RESULTS ARCHIVE (ORDERED & ARCHIVED CLINICAL TIMELINE - Requested)
+// 5. RESULTS ARCHIVE (ORDERED & ARCHIVED CLINICAL TIMELINE)
 // ==========================================================================
 
-// Official Platform Patient Clinical Archive Database (admin / admin123 or phone 0550123456 / 0600000000)
 const MASTER_PATIENT_ARCHIVE = [
     {
         id: "RES-2026-11-094",
@@ -947,11 +994,6 @@ function handleQuickTrack() {
     fetchResults();
 }
 
-function quickFillTrack(val) {
-    document.getElementById("trackInput").value = val;
-    fetchResults();
-}
-
 function filterResultsArchive(year) {
     activeResultsArchiveFilter = year;
     document.querySelectorAll(".archive-filter-btn").forEach(btn => btn.classList.remove("active"));
@@ -973,7 +1015,6 @@ async function fetchResults() {
         </div>
     `;
 
-    // Check if searching for admin, 0550123456, 0600000000, or user is logged in as admin
     const isAdminLookup = !query || query === "admin" || query === "admin123" || query === "0550123456" || query === "0600000000" || (currentPatient && currentPatient.isMasterAdmin);
 
     if (isAdminLookup) {
@@ -983,7 +1024,6 @@ async function fetchResults() {
         return;
     }
 
-    // Try live API
     let foundLive = false;
     try {
         const formData = new FormData();
@@ -1005,7 +1045,6 @@ async function fetchResults() {
     }
 }
 
-// Render Ordered & Archived Clinical Reports Timeline (Requested)
 function renderArchivedReportsList(reports, patientName, fileNumber) {
     const container = document.getElementById("resultsViewContainer");
 
