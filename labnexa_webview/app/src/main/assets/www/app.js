@@ -137,16 +137,19 @@ const ANALYSES_DATABASE = [
 // App State
 let currentLang = "ar";
 let activeLab = LABORATORIES_NETWORK[0]; // Default Lab: Alger Centre
+let bookingChosenLabId = LABORATORIES_NETWORK[0].id;
 let selectedAnalysisIds = new Set([1, 2]); // default FNS + Glycémie selected
 let activeCategory = "all";
 let activeWilayaFilter = "all";
-let currentPatient = null; // null if guest, or object if logged in
+let currentPatient = null;
+let activeResultsArchiveFilter = "all";
 
 // DOM Ready initialization
 document.addEventListener("DOMContentLoaded", () => {
     loadSavedLab();
     loadPatientSession();
     initDefaultDate();
+    renderBookingLabCards();
     renderBookingAnalyses();
     renderCatalog();
     renderLabsList();
@@ -155,7 +158,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // ==========================================================================
-// 2. SaaS MULTI-LAB MANAGEMENT
+// 2. SaaS MULTI-LAB MANAGEMENT & IN-BOOKING SELECTION
 // ==========================================================================
 
 function loadSavedLab() {
@@ -163,7 +166,10 @@ function loadSavedLab() {
         const savedId = localStorage.getItem("labnexa_active_lab_id");
         if (savedId) {
             const found = LABORATORIES_NETWORK.find(l => l.id === savedId);
-            if (found) activeLab = found;
+            if (found) {
+                activeLab = found;
+                bookingChosenLabId = found.id;
+            }
         }
     } catch (e) {}
     updateActiveLabUI();
@@ -176,17 +182,56 @@ function updateActiveLabUI() {
     const headerDisplay = document.getElementById("activeLabNameDisplay");
     if (headerDisplay) headerDisplay.textContent = title;
 
-    // Booking banner
-    const bookingLabName = document.getElementById("bookingLabName");
-    const bookingLabAddress = document.getElementById("bookingLabAddress");
-    if (bookingLabName) bookingLabName.textContent = title;
-    if (bookingLabAddress) bookingLabAddress.textContent = activeLab.address;
-
     // Home summary
     const summary = document.getElementById("activeLabWilayaSummary");
     if (summary) summary.textContent = `${activeLab.wilaya} • تقييم ⭐ ${activeLab.rating}`;
 
+    const profTitle = document.getElementById("profileCurrentLabTitle");
+    if (profTitle) profTitle.textContent = title;
+
     renderCurrentLabPreview();
+    renderBookingLabCards();
+}
+
+// Render Explicit Laboratory Cards inside Booking Step 1 (Requested)
+function renderBookingLabCards() {
+    const container = document.getElementById("bookingLabCardsList");
+    if (!container) return;
+
+    container.innerHTML = LABORATORIES_NETWORK.map(lab => {
+        const isSelected = lab.id === bookingChosenLabId;
+        const title = currentLang === "ar" ? lab.name : lab.name_fr;
+        return `
+            <div class="booking-lab-item-card ${isSelected ? 'selected-lab' : ''}" onclick="selectBookingLab('${lab.id}')">
+                <div style="flex: 1;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px;">
+                        <strong>${title}</strong>
+                        <span class="lab-rating-pill">⭐ ${lab.rating}</span>
+                    </div>
+                    <small>📍 ${lab.address}</small>
+                    <div style="margin-top: 4px; display: flex; gap: 4px; flex-wrap: wrap;">
+                        <span class="lab-eq-tag" style="background:#E0E7FF;color:#4338CA;font-weight:700;">✓ ${lab.accreditation}</span>
+                        <span class="lab-eq-tag">🕒 ${lab.hours}</span>
+                        ${lab.homeService ? '<span class="lab-eq-tag" style="background:#FEF3C7;color:#92400E;">🚗 سحب منزلي</span>' : ''}
+                    </div>
+                </div>
+                <div style="margin-right: 10px;">
+                    <input type="radio" name="booking_lab_radio" value="${lab.id}" ${isSelected ? 'checked' : ''} style="width: 18px; height: 18px; accent-color: #0066FF;">
+                </div>
+            </div>
+        `;
+    }).join("");
+}
+
+function selectBookingLab(labId) {
+    bookingChosenLabId = labId;
+    const found = LABORATORIES_NETWORK.find(l => l.id === labId);
+    if (found) {
+        activeLab = found;
+        try { localStorage.setItem("labnexa_active_lab_id", labId); } catch(e){}
+    }
+    updateActiveLabUI();
+    showToast(`تم اختيار: ${activeLab.name}`);
 }
 
 function renderCurrentLabPreview() {
@@ -280,18 +325,65 @@ function selectLaboratory(labId) {
     if (!found) return;
 
     activeLab = found;
-    try {
-        localStorage.setItem("labnexa_active_lab_id", labId);
-    } catch (e) {}
+    bookingChosenLabId = labId;
+    try { localStorage.setItem("labnexa_active_lab_id", labId); } catch (e) {}
 
     updateActiveLabUI();
     closeLabSelectorModal();
-    showToast(`تم تغيير المخبر بنجاح: ${activeLab.wilaya}`);
+    showToast(`تم تغيير المخبر المعتمد: ${activeLab.wilaya}`);
 }
 
 // ==========================================================================
-// 3. GLOBAL PATIENT AUTHENTICATION & PROFILE
+// 3. FULLSCREEN LUXURY AUTH GATE & PATIENT SESSION
 // ==========================================================================
+
+function handleHeaderAuthClick() {
+    if (currentPatient) {
+        switchTab("profile");
+    } else {
+        showAuthGate();
+    }
+}
+
+function showAuthGate() {
+    const gate = document.getElementById("authGateView");
+    if (gate) {
+        gate.style.display = "flex";
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+}
+
+function hideAuthGate() {
+    const gate = document.getElementById("authGateView");
+    if (gate) gate.style.display = "none";
+}
+
+function switchGateAuthTab(type) {
+    const tabLogin = document.getElementById("gateTabLoginBtn");
+    const tabReg = document.getElementById("gateTabRegBtn");
+    const formLogin = document.getElementById("gateLoginForm");
+    const formReg = document.getElementById("gateRegisterForm");
+
+    if (type === "login") {
+        tabLogin.classList.add("active");
+        tabReg.classList.remove("active");
+        formLogin.style.display = "block";
+        formReg.style.display = "none";
+    } else {
+        tabReg.classList.add("active");
+        tabLogin.classList.remove("active");
+        formReg.style.display = "block";
+        formLogin.style.display = "none";
+    }
+}
+
+// Quick Fill for Requested Admin Patient Account (admin / admin123)
+function fillDemoAdminCredentials() {
+    switchGateAuthTab('login');
+    document.getElementById("gate_login_id").value = "admin";
+    document.getElementById("gate_login_pass").value = "admin123";
+    showToast("تم إدراج بيانات حساب المريض المعتمد (admin / admin123)");
+}
 
 function loadPatientSession() {
     try {
@@ -313,20 +405,17 @@ function updateAuthUI() {
     const bookingHint = document.getElementById("bookingAuthHint");
 
     if (currentPatient) {
-        // Logged In
         const firstLetter = currentPatient.name ? currentPatient.name.charAt(0) : "م";
         if (authBtnLabel) authBtnLabel.textContent = currentPatient.name.split(" ")[0];
         if (authBtnIcon) authBtnIcon.textContent = "👤";
         if (homeUserCard) homeUserCard.style.display = "flex";
         if (homeUserName) homeUserName.textContent = currentPatient.name;
         if (homeUserAvatar) homeUserAvatar.textContent = firstLetter;
-        if (homeUserMeta) homeUserMeta.textContent = `ملف طبي: #${currentPatient.file_number || 'NX-8421'} • ${currentPatient.wilaya || 'الجزائر'}`;
+        if (homeUserMeta) homeUserMeta.textContent = `ملف طبي: #${currentPatient.file_number || 'NX-ADM-001'} • ${currentPatient.wilaya || 'الجزائر'}`;
         if (bookingHint) bookingHint.style.display = "none";
 
-        // Pre-fill booking form
         prefillBookingForm();
     } else {
-        // Guest
         if (authBtnLabel) authBtnLabel.textContent = "دخول";
         if (authBtnIcon) authBtnIcon.textContent = "👤";
         if (homeUserCard) homeUserCard.style.display = "none";
@@ -347,107 +436,74 @@ function prefillBookingForm() {
     if (ageInput && !ageInput.value) ageInput.value = currentPatient.age || "";
 }
 
-function openAuthModal() {
-    if (currentPatient) {
-        // If already logged in, navigate to Profile tab
-        switchTab("profile");
-        return;
-    }
-    document.getElementById("authModal").classList.add("show");
-}
-
-function closeAuthModal() {
-    document.getElementById("authModal").classList.remove("show");
-}
-
-function switchAuthTab(type) {
-    const tabLogin = document.getElementById("tabBtnLogin");
-    const tabReg = document.getElementById("tabBtnRegister");
-    const formLogin = document.getElementById("loginForm");
-    const formReg = document.getElementById("registerForm");
-
-    if (type === "login") {
-        tabLogin.classList.add("active");
-        tabReg.classList.remove("active");
-        formLogin.style.display = "block";
-        formReg.style.display = "none";
-    } else {
-        tabReg.classList.add("active");
-        tabLogin.classList.remove("active");
-        formReg.style.display = "block";
-        formLogin.style.display = "none";
-    }
-}
-
-async function handleLoginSubmit(event) {
+// Login Handler with Official Platform Admin Patient Account Support (Requested)
+async function handleGateLoginSubmit(event) {
     event.preventDefault();
-    const identifier = document.getElementById("login_identifier").value.trim();
-    const password = document.getElementById("login_password").value.trim();
+    const identifier = document.getElementById("gate_login_id").value.trim();
+    const password = document.getElementById("gate_login_pass").value.trim();
 
     if (!identifier || !password) {
-        showToast("يرجى إدخال الهاتف/البريد وكلمة المرور");
+        showToast("يرجى إدخال المعرف وكلمة المرور");
         return;
     }
+
+    // Check if logging in as Master Admin Patient (admin / admin123 or 0600000000 / admin123)
+    const isAdminAccount = (identifier.toLowerCase() === "admin" || identifier === "0600000000" || identifier === "0550123456") && password === "admin123";
+
+    if (isAdminAccount) {
+        currentPatient = {
+            name: "محمد بلقاسم (Patient Admin)",
+            phone: "0550123456",
+            email: "admin@labnexa.dz",
+            wilaya: "الجزائر العاصمة",
+            file_number: "NX-ADM-001",
+            age: "36 سنة",
+            gender: "male",
+            isMasterAdmin: true,
+            logged_at: new Date().toISOString()
+        };
+    } else {
+        currentPatient = {
+            name: identifier.includes("@") ? identifier.split("@")[0] : "محمد بلقاسم",
+            phone: identifier.replace(/[^0-9]/g, "") || "0550123456",
+            wilaya: activeLab.wilaya,
+            file_number: "NX-" + Math.floor(1000 + Math.random() * 9000),
+            age: "32 سنة",
+            gender: "male",
+            logged_at: new Date().toISOString()
+        };
+    }
+
+    // Save session
+    try { localStorage.setItem("labnexa_patient_session", JSON.stringify(currentPatient)); } catch(e){}
 
     // Try posting to API in background
     try {
         const formData = new FormData();
         formData.append("login", identifier);
         formData.append("password", password);
-        fetch(`${BASE_API_URL}/api/v1/patient/login`, {
-            method: "POST",
-            body: formData
-        }).catch(e => {});
-    } catch (e) {}
-
-    // Set Patient Session
-    currentPatient = {
-        name: identifier.includes("@") ? identifier.split("@")[0] : "محمد بلقاسم",
-        phone: identifier.replace(/[^0-9]/g, "") || "0550123456",
-        wilaya: activeLab.wilaya,
-        file_number: "NX-" + Math.floor(1000 + Math.random() * 9000),
-        age: "34 سنة",
-        gender: "male",
-        logged_at: new Date().toISOString()
-    };
-
-    try {
-        localStorage.setItem("labnexa_patient_session", JSON.stringify(currentPatient));
+        fetch(`${BASE_API_URL}/api/v1/patient/login`, { method: "POST", body: formData }).catch(e => {});
     } catch (e) {}
 
     updateAuthUI();
-    closeAuthModal();
+    hideAuthGate();
     showToast(`مرحباً بك ${currentPatient.name} في شبكة LabNexa`);
 }
 
-async function handleRegisterSubmit(event) {
+async function handleGateRegisterSubmit(event) {
     event.preventDefault();
-    const name = document.getElementById("reg_name").value.trim();
-    const phone = document.getElementById("reg_phone").value.trim();
-    const wilaya = document.getElementById("reg_wilaya").value;
-    const age = document.getElementById("reg_age").value.trim();
-    const gender = document.getElementById("reg_gender").value;
-    const password = document.getElementById("reg_password").value.trim();
+    const name = document.getElementById("gate_reg_name").value.trim();
+    const phone = document.getElementById("gate_reg_phone").value.trim();
+    const wilaya = document.getElementById("gate_reg_wilaya").value;
+    const age = document.getElementById("gate_reg_age").value.trim();
+    const gender = document.getElementById("gate_reg_gender").value;
+    const password = document.getElementById("gate_reg_pass").value.trim();
 
     if (!name || !phone || !password) {
         showToast("يرجى ملء جميع الحقول الإلزامية");
         return;
     }
 
-    // Try posting to API
-    try {
-        const formData = new FormData();
-        formData.append("name", name);
-        formData.append("phone", phone);
-        formData.append("password", password);
-        formData.append("gender", gender);
-        fetch(`${BASE_API_URL}/api/v1/patient/register`, {
-            method: "POST",
-            body: formData
-        }).catch(e => {});
-    } catch (e) {}
-
-    // Store Session
     currentPatient = {
         name,
         phone,
@@ -458,22 +514,31 @@ async function handleRegisterSubmit(event) {
         registered_at: new Date().toISOString()
     };
 
+    try { localStorage.setItem("labnexa_patient_session", JSON.stringify(currentPatient)); } catch(e){}
+
+    // Post to API
     try {
-        localStorage.setItem("labnexa_patient_session", JSON.stringify(currentPatient));
-    } catch (e) {}
+        const formData = new FormData();
+        formData.append("name", name);
+        formData.append("phone", phone);
+        formData.append("password", password);
+        formData.append("gender", gender);
+        fetch(`${BASE_API_URL}/api/v1/patient/register`, { method: "POST", body: formData }).catch(e => {});
+    } catch(e){}
 
     updateAuthUI();
-    closeAuthModal();
+    hideAuthGate();
     showToast(`تم إنشاء حسابك بنجاح! مرحباً بك`);
 }
 
+// Logout button smoothly transitions to the luxury Auth Gate (Requested)
 function logoutPatient() {
     currentPatient = null;
-    try {
-        localStorage.removeItem("labnexa_patient_session");
-    } catch (e) {}
+    try { localStorage.removeItem("labnexa_patient_session"); } catch(e){}
     updateAuthUI();
     showToast("تم تسجيل الخروج بنجاح");
+    // Directly open the luxury Auth Gate
+    showAuthGate();
 }
 
 function renderProfileSection() {
@@ -482,13 +547,13 @@ function renderProfileSection() {
 
     if (!currentPatient) {
         container.innerHTML = `
-            <div class="card text-center" style="padding: 22px;">
+            <div class="card text-center" style="padding: 24px;">
                 <div style="font-size: 2.5rem; margin-bottom: 8px;">🔐</div>
-                <h3 style="margin-bottom: 6px;">حساب المريض الموحد</h3>
+                <h3 style="margin-bottom: 6px;">بوابة حساب المريض الطبية</h3>
                 <p class="text-muted text-sm" style="margin-bottom: 16px;">
-                    سجّل الدخول لمتابعة ملفاتك الطبية، حجز مواعيدك بضغطة زر، واستعراض نتائجك السابقة في كل المخابر.
+                    سجّل الدخول لمتابعة ملفاتك الطبية وأرشيف الفحوصات وحجز مواعيدك السريعة.
                 </p>
-                <button class="btn btn-primary btn-block btn-lg" onclick="openAuthModal()">
+                <button class="btn btn-primary btn-block btn-lg" onclick="showAuthGate()">
                     تسجيل الدخول أو فتح حساب جديد 👤
                 </button>
             </div>
@@ -521,7 +586,8 @@ function renderProfileSection() {
                         <small class="text-muted">رقم الملف: #${currentPatient.file_number} • ${currentPatient.wilaya}</small>
                     </div>
                 </div>
-                <button class="btn btn-sm btn-outline" onclick="logoutPatient()">خروج</button>
+                <!-- Logout Button transitions to Luxury Auth Gate -->
+                <button class="btn btn-sm btn-outline" style="border-color:#DC2626;color:#DC2626;" onclick="logoutPatient()">تسجيل الخروج 🚪</button>
             </div>
 
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px;">
@@ -567,7 +633,10 @@ function switchTab(tabId) {
     if (targetPane) targetPane.classList.add("active");
     if (targetNav) targetNav.classList.add("active");
 
-    if (tabId === "booking") prefillBookingForm();
+    if (tabId === "booking") {
+        prefillBookingForm();
+        renderBookingLabCards();
+    }
     if (tabId === "profile") renderProfileSection();
 
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -695,11 +764,13 @@ async function handleBookingSubmit(event) {
     const name = document.getElementById("book_name").value.trim();
     const phone = document.getElementById("book_phone").value.trim();
     const age = document.getElementById("book_age").value.trim();
-    const wilaya = document.getElementById("book_wilaya").value;
     const gender = document.querySelector('input[name="book_gender"]:checked')?.value || "male";
     const date = document.getElementById("book_date").value;
     const time = document.getElementById("book_time").value;
     const isHome = document.getElementById("book_home_service").checked;
+
+    // Use explicitly chosen laboratory in booking Step 1
+    const chosenLab = LABORATORIES_NETWORK.find(l => l.id === bookingChosenLabId) || activeLab;
 
     if (!name || !phone || !date) {
         showToast("يرجى ملء جميع الحقول الإلزامية");
@@ -716,13 +787,12 @@ async function handleBookingSubmit(event) {
         phone,
         age,
         gender,
-        wilaya,
         date,
         time,
         isHome,
-        labId: activeLab.id,
-        labName: activeLab.name,
-        labAddress: activeLab.address,
+        labId: chosenLab.id,
+        labName: chosenLab.name,
+        labAddress: chosenLab.address,
         analyses: selectedAnalysesList,
         totalPrice,
         created_at: new Date().toISOString()
@@ -738,7 +808,7 @@ async function handleBookingSubmit(event) {
         formData.append("date", date);
         formData.append("time", time);
         formData.append("gender", gender);
-        formData.append("lab_id", activeLab.id);
+        formData.append("lab_id", chosenLab.id);
         selectedAnalysisIds.forEach(id => formData.append("analysisTypes[]", id));
 
         fetch(`${BASE_API_URL}/booking`, {
@@ -760,7 +830,7 @@ function showTicketModal(b) {
 
     content.innerHTML = `
         <div style="text-align: center; margin-bottom: 12px;">
-            <div style="font-size: 0.8rem; color: #64748B;">رقم الحجز المرجعي الموحد</div>
+            <div style="font-size: 0.8rem; color: #64748B;">رقم الحجز المرجعي المعتمد</div>
             <div class="ticket-code">${b.code}</div>
             <div style="display: inline-block; background: #D1FAE5; color: #065F46; padding: 3px 10px; border-radius: 99px; font-size: 0.75rem; font-weight: 700;">
                 ✓ مسجل في: ${b.labName}
@@ -770,7 +840,7 @@ function showTicketModal(b) {
         <div style="font-size: 0.85rem; line-height: 1.8; color: #1E293B; border-top: 1px dashed #CBD5E1; padding-top: 10px;">
             <div><strong>👤 المريض:</strong> ${b.name}</div>
             <div><strong>📞 الهاتف:</strong> ${b.phone}</div>
-            <div><strong>🏥 المخبر:</strong> ${b.labName}</div>
+            <div><strong>🏥 المخبر المختار:</strong> ${b.labName}</div>
             <div><strong>📍 العنوان:</strong> ${b.labAddress}</div>
             <div><strong>📅 الموعد:</strong> ${b.date} (${b.time})</div>
             ${b.isHome ? '<div style="color: #D97706;"><strong>🚗 نوع الخدمة:</strong> سحب عينات في المنزل</div>' : ''}
@@ -779,7 +849,7 @@ function showTicketModal(b) {
         </div>
 
         <div style="text-align: center; margin-top: 14px; font-size: 0.72rem; color: #64748B;">
-            يرجى إظهار هذه التذكرة عند وصولك للمخبر للحصول على الأولوية الفورية.
+            يرجى إبراز هذا الرمز عند وصولك للمخبر للحصول على الأولوية الفورية.
         </div>
     `;
 
@@ -808,8 +878,62 @@ function getSavedBookings() {
 }
 
 // ==========================================================================
-// 5. RESULTS TRACKER
+// 5. RESULTS ARCHIVE (ORDERED & ARCHIVED CLINICAL TIMELINE - Requested)
 // ==========================================================================
+
+// Official Platform Patient Clinical Archive Database (admin / admin123 or phone 0550123456 / 0600000000)
+const MASTER_PATIENT_ARCHIVE = [
+    {
+        id: "RES-2026-11-094",
+        year: "2026",
+        date: "14 نوفمبر 2026",
+        status: "ready",
+        status_label: "جاهزة ومعتمدة",
+        lab: LABORATORIES_NETWORK[0], // Alger Centre
+        doctor: "د. أمين بلقاسم (أخصائي بيولوجيا طبية)",
+        title: "فحص الدم الشامل ومؤشرات وظائف الكلى والسكري",
+        ai_insight: "جميع مؤشرات وظائف الكلى وقوة الدم وسكر الدم ضمن المجال الطبيعي المثالي. يُنصح بإعادة الفحص السنوي بعد 12 شهراً.",
+        analyses: [
+            { name: "السكر في الدم على الريق (Glycémie à jeun)", result: "0.94", unit: "g/L", ref: "0.70 - 1.10", status: "normal" },
+            { name: "الهيموغلوبين (Hémoglobine - FNS)", result: "14.8", unit: "g/dL", ref: "13.0 - 17.5", status: "normal" },
+            { name: "الكرياتينين - فحص الكلى (Créatinine)", result: "8.9", unit: "mg/L", ref: "7.0 - 12.0", status: "normal" },
+            { name: "اليوريا في الدم (Urée sanguine)", result: "0.28", unit: "g/L", ref: "0.15 - 0.45", status: "normal" }
+        ]
+    },
+    {
+        id: "RES-2025-06-412",
+        year: "2025",
+        date: "22 جوان 2025",
+        status: "ready",
+        status_label: "مؤرشفة ومعتمدة",
+        lab: LABORATORIES_NETWORK[1], // Hydra
+        doctor: "د. سارة لعرابي (أستاذة مساعدة في علم المناعة)",
+        title: "الفحص الدوري للدهون ووظائف الكبد (Bilan Lipidique & Hépatique)",
+        ai_insight: "مستوى الكولسترول الكلي كان مرتفعاً بنسبة طفيفة في جوان 2025 (2.28 g/L). لوحظ تحسن ملحوظ بعد تعديل النمط الغذائي.",
+        analyses: [
+            { name: "الكولسترول الكلي (Cholestérol Total)", result: "2.28 ⚠️", unit: "g/L", ref: "1.50 - 2.00", status: "high" },
+            { name: "الدهون الثلاثية (Triglycérides)", result: "1.25", unit: "g/L", ref: "0.50 - 1.50", status: "normal" },
+            { name: "أنزيم الكبد (Transaminases TGO/ASAT)", result: "24", unit: "UI/L", ref: "< 37", status: "normal" },
+            { name: "أنزيم الكبد (Transaminases TGP/ALAT)", result: "28", unit: "UI/L", ref: "< 41", status: "normal" }
+        ]
+    },
+    {
+        id: "RES-2024-01-180",
+        year: "2024",
+        date: "15 جانفي 2024",
+        status: "ready",
+        status_label: "أرشيف 2024",
+        lab: LABORATORIES_NETWORK[2], // Oran
+        doctor: "د. كريم بن عيسى (بيولوجي استشفائي)",
+        title: "فحص الفيتامينات وهرمونات الغدة الدرقية",
+        ai_insight: "تم علاج نقص فيتامين د بنجاح بجرعات علاجية في بداية 2024. نشاط الغدة الدرقية سليم تماماً.",
+        analyses: [
+            { name: "فيتامين د (Vitamine D 25-OH)", result: "18.2 ⚠️", unit: "ng/mL", ref: "30.0 - 100.0", status: "low" },
+            { name: "هرمون الغدة (TSH ultra-sensible)", result: "2.15", unit: "µUI/mL", ref: "0.40 - 4.00", status: "normal" },
+            { name: "مخزون الحديد (Ferritine sérique)", result: "110", unit: "ng/mL", ref: "30 - 300", status: "normal" }
+        ]
+    }
+];
 
 function handleQuickTrack() {
     const input = document.getElementById("homeQuickTrackInput");
@@ -823,37 +947,52 @@ function handleQuickTrack() {
     fetchResults();
 }
 
+function quickFillTrack(val) {
+    document.getElementById("trackInput").value = val;
+    fetchResults();
+}
+
+function filterResultsArchive(year) {
+    activeResultsArchiveFilter = year;
+    document.querySelectorAll(".archive-filter-btn").forEach(btn => btn.classList.remove("active"));
+    const activeBtn = Array.from(document.querySelectorAll(".archive-filter-btn")).find(btn => btn.getAttribute("onclick")?.includes(year));
+    if (activeBtn) activeBtn.classList.add("active");
+    fetchResults();
+}
+
 async function fetchResults() {
     const input = document.getElementById("trackInput");
-    const query = (input?.value || "").trim();
+    const query = (input?.value || "").trim().toLowerCase();
     const container = document.getElementById("resultsViewContainer");
-
-    if (!query) {
-        showToast("يرجى إدخال رقم الحجز أو رقم الهاتف");
-        return;
-    }
 
     container.style.display = "block";
     container.innerHTML = `
         <div class="card text-center" style="padding: 24px;">
             <div style="font-size: 2rem; margin-bottom: 8px;">🔄</div>
-            <div>جاري الاتصال بالسجل الطبي للمخبر والتحقق...</div>
+            <div>جاري استرجاع الأرشيف الطبي المؤرشف والتحقق...</div>
         </div>
     `;
+
+    // Check if searching for admin, 0550123456, 0600000000, or user is logged in as admin
+    const isAdminLookup = !query || query === "admin" || query === "admin123" || query === "0550123456" || query === "0600000000" || (currentPatient && currentPatient.isMasterAdmin);
+
+    if (isAdminLookup) {
+        setTimeout(() => {
+            renderArchivedReportsList(MASTER_PATIENT_ARCHIVE, "محمد بلقاسم (Patient Admin Account)", "NX-ADM-001");
+        }, 300);
+        return;
+    }
 
     // Try live API
     let foundLive = false;
     try {
         const formData = new FormData();
         formData.append("query", query);
-        const resp = await fetch(`${BASE_API_URL}/app/track`, {
-            method: "POST",
-            body: formData
-        });
+        const resp = await fetch(`${BASE_API_URL}/app/track`, { method: "POST", body: formData });
         if (resp.ok) {
             const data = await resp.json();
             if (data.success && data.reservation) {
-                renderLiveResultView(data.reservation);
+                renderSingleLiveResult(data.reservation);
                 foundLive = true;
             }
         }
@@ -861,112 +1000,99 @@ async function fetchResults() {
 
     if (!foundLive) {
         setTimeout(() => {
-            renderSampleClinicalResult(query);
-        }, 500);
+            renderArchivedReportsList(MASTER_PATIENT_ARCHIVE, currentPatient ? currentPatient.name : "محمد بلقاسم", "NX-8421");
+        }, 400);
     }
 }
 
-function renderSampleClinicalResult(query) {
+// Render Ordered & Archived Clinical Reports Timeline (Requested)
+function renderArchivedReportsList(reports, patientName, fileNumber) {
     const container = document.getElementById("resultsViewContainer");
-    const patientName = currentPatient ? currentPatient.name : "محمد بلقاسم";
+
+    const filtered = reports.filter(r => {
+        return activeResultsArchiveFilter === "all" || r.year === activeResultsArchiveFilter;
+    });
+
+    if (filtered.length === 0) {
+        container.innerHTML = `
+            <div class="card text-center text-muted" style="padding: 24px;">
+                لا توجد تقارير مؤرشفة لسنة ${activeResultsArchiveFilter}.
+            </div>
+        `;
+        return;
+    }
 
     container.innerHTML = `
-        <div class="results-card-container">
-            <div class="res-patient-meta">
-                <div>
-                    <h3 style="font-size: 1.05rem; color: #0B1E36;">تقرير النتائج الطبية الرسمي (SaaS)</h3>
-                    <div style="font-size: 0.78rem; color: #64748B; margin-top: 2px;">
-                        المريض: <strong>${patientName}</strong> | الملف: <strong>#NX-${query.slice(-4) || '8412'}</strong>
-                    </div>
-                    <div style="font-size: 0.72rem; color: #0066FF; font-weight: 600;">
-                        🏥 صادر عن: ${activeLab.name}
-                    </div>
-                    <div style="font-size: 0.7rem; color: #64748B;">مدير المخبر: ${activeLab.director}</div>
-                </div>
-                <div>
-                    <span class="res-status-badge status-ready">✓ معتمدة رسميّاً</span>
-                </div>
-            </div>
-
-            <table class="res-table">
-                <thead>
-                    <tr>
-                        <th>الفحص الطبي</th>
-                        <th>النتيجة</th>
-                        <th>الوحدة</th>
-                        <th>المجال المرجعي</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><strong>السكر في الدم (Glycémie à jeun)</strong></td>
-                        <td><span class="val-pill val-normal">0.96</span></td>
-                        <td>g/L</td>
-                        <td>0.70 - 1.10</td>
-                    </tr>
-                    <tr>
-                        <td><strong>الكولسترول الكلي (Cholestérol)</strong></td>
-                        <td><span class="val-pill val-high">2.28 ⚠️</span></td>
-                        <td>g/L</td>
-                        <td>1.50 - 2.00</td>
-                    </tr>
-                    <tr>
-                        <td><strong>الدهون الثلاثية (Triglycérides)</strong></td>
-                        <td><span class="val-pill val-normal">1.22</span></td>
-                        <td>g/L</td>
-                        <td>0.50 - 1.50</td>
-                    </tr>
-                    <tr>
-                        <td><strong>الكرياتينين - فحص الكلى (Créatinine)</strong></td>
-                        <td><span class="val-pill val-normal">9.2</span></td>
-                        <td>mg/L</td>
-                        <td>7.0 - 12.0</td>
-                    </tr>
-                    <tr>
-                        <td><strong>الهيموغلوبين (Hémoglobine - FNS)</strong></td>
-                        <td><span class="val-pill val-normal">14.6</span></td>
-                        <td>g/dL</td>
-                        <td>13.0 - 17.5</td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <div class="ai-insight-box">
-                <h5>🤖 توضيح استشاري ذكي ومبسط</h5>
-                <p>مؤشرات وظائف الكلى وقوة الدم ممتازة. يُلاحظ ارتفاع طفيف في الكولسترول الكلي (2.28 g/L)؛ يُنصح باتباع حمية متوازنة ومراجعة الطبيب المعالج.</p>
-            </div>
-
-            <div style="display: flex; gap: 8px;">
-                <button class="btn btn-primary btn-block" onclick="triggerDownloadPDF()">
-                    📥 تحميل التقرير PDF
-                </button>
-                <button class="btn btn-whatsapp" onclick="shareResultsWhatsApp()">
-                    💬 مشاركة
-                </button>
-            </div>
+        <div style="margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
+            <strong style="color: #0B1E36; font-size: 0.95rem;">👤 ${patientName}</strong>
+            <span class="badge-count">ملف طبي: #${fileNumber}</span>
         </div>
+        ${filtered.map(report => `
+            <div class="results-archive-card">
+                <div class="archive-card-header">
+                    <div>
+                        <div style="font-size: 0.72rem; color: #0066FF; font-weight: 700; margin-bottom: 2px;">
+                            🏥 ${report.lab.name}
+                        </div>
+                        <h4 style="font-size: 0.95rem; color: #0B1E36; margin-bottom: 3px;">${report.title}</h4>
+                        <small class="text-muted">📅 ${report.date} • الرمز: ${report.id}</small>
+                    </div>
+                    <div>
+                        <span class="res-status-badge status-ready">✓ ${report.status_label}</span>
+                    </div>
+                </div>
+
+                <table class="res-table">
+                    <thead>
+                        <tr><th>الفحص الطبي</th><th>النتيجة</th><th>الوحدة</th><th>المجال المرجعي</th></tr>
+                    </thead>
+                    <tbody>
+                        ${report.analyses.map(a => `
+                            <tr>
+                                <td><strong>${a.name}</strong></td>
+                                <td><span class="val-pill ${a.status === 'high' ? 'val-high' : (a.status === 'low' ? 'val-low' : 'val-normal')}">${a.result}</span></td>
+                                <td>${a.unit}</td>
+                                <td>${a.ref}</td>
+                            </tr>
+                        `).join("")}
+                    </tbody>
+                </table>
+
+                <div class="ai-insight-box">
+                    <h5>🤖 ملخص تحليلي واستشاري:</h5>
+                    <p>${report.ai_insight}</p>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px dashed #E2E8F0; padding-top: 10px; margin-top: 6px;">
+                    <small style="color: #64748B;">✍️ الطبيب المسؤول: ${report.doctor}</small>
+                    <div style="display: flex; gap: 6px;">
+                        <button class="btn btn-primary btn-sm" onclick="triggerDownloadPDF()">📥 تحميل PDF</button>
+                        <button class="btn btn-whatsapp btn-sm" onclick="shareResultsWhatsApp()">💬 مشاركة</button>
+                    </div>
+                </div>
+            </div>
+        `).join("")}
     `;
 }
 
-function renderLiveResultView(res) {
+function renderSingleLiveResult(res) {
     const container = document.getElementById("resultsViewContainer");
     const rows = (res.analyses || []).map(a => `
         <tr>
             <td><strong>${a.name}</strong></td>
-            <td><span class="val-pill ${a.status === 'ready' ? 'val-normal' : 'val-normal'}">${a.result || 'معتمدة'}</span></td>
+            <td><span class="val-pill val-normal">${a.result || 'معتمدة'}</span></td>
             <td>${a.unit || '--'}</td>
             <td>${a.reference || '--'}</td>
         </tr>
     `).join("");
 
     container.innerHTML = `
-        <div class="results-card-container">
-            <div class="res-patient-meta">
+        <div class="results-archive-card">
+            <div class="archive-card-header">
                 <div>
-                    <h3 style="font-size: 1.05rem; color: #0B1E36;">تقرير النتائج المخبرية</h3>
+                    <h3 style="font-size: 1.05rem; color: #0B1E36;">تقرير النتائج المخبرية الفورية</h3>
                     <div style="font-size: 0.78rem; color: #64748B;">المريض: <strong>${res.patient_name}</strong></div>
-                    <div style="font-size: 0.72rem; color: #64748B;">تاريخ التحليل: ${res.date}</div>
-                    <div style="font-size: 0.7rem; color: #0066FF;">المخبر: ${activeLab.name}</div>
+                    <div style="font-size: 0.72rem; color: #0066FF;">المخبر: ${activeLab.name}</div>
                 </div>
                 <div>
                     <span class="res-status-badge ${res.status === 'ready' ? 'status-ready' : 'status-pending'}">
@@ -983,21 +1109,19 @@ function renderLiveResultView(res) {
             ${res.ai_insight ? `<div class="ai-insight-box"><h5>🤖 ملخص تحليلي</h5><p>${res.ai_insight}</p></div>` : ''}
 
             <button class="btn btn-primary btn-block" onclick="triggerDownloadPDF()">
-                📥 تحميل التقرير الطبي
+                📥 تحميل التقرير الطبي PDF
             </button>
         </div>
     `;
 }
 
 function triggerDownloadPDF() {
-    showToast("جاري إعداد وتحميل تقرير التحاليل بصيغة PDF...");
-    setTimeout(() => {
-        window.print();
-    }, 700);
+    showToast("جاري إعداد وتحميل التقرير المخبري بصيغة PDF...");
+    setTimeout(() => { window.print(); }, 700);
 }
 
 function shareResultsWhatsApp() {
-    const text = encodeURIComponent(`مرحباً، أشارككم تقرير تحاليلي الطبية من ${activeLab.name}.`);
+    const text = encodeURIComponent(`مرحباً، أشارككم تقرير تحاليلي الطبية المعتمد من شبكة مخابر LabNexa.`);
     window.location.href = `https://wa.me/?text=${text}`;
 }
 
@@ -1012,7 +1136,5 @@ function showToast(msg) {
     if (!toast) return;
     toast.textContent = msg;
     toast.classList.add("show");
-    setTimeout(() => {
-        toast.classList.remove("show");
-    }, 3000);
+    setTimeout(() => { toast.classList.remove("show"); }, 3000);
 }
