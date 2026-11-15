@@ -145,6 +145,19 @@ let currentPatient = null;
 let activeResultsArchiveFilter = "all";
 let activeAuthTab = "login"; // "login" or "register"
 
+// Master Admin Patient Account Template
+const MASTER_ADMIN_PATIENT = {
+    name: "محمد بلقاسم (Patient Admin Account)",
+    phone: "0550123456",
+    email: "admin@labnexa.dz",
+    wilaya: "الجزائر العاصمة",
+    file_number: "NX-ADM-001",
+    age: "36 سنة",
+    gender: "male",
+    isMasterAdmin: true,
+    logged_at: new Date().toISOString()
+};
+
 // DOM Ready initialization
 document.addEventListener("DOMContentLoaded", () => {
     loadSavedLab();
@@ -338,10 +351,18 @@ function selectLaboratory(labId) {
 function loadPatientSession() {
     try {
         const raw = localStorage.getItem("labnexa_patient_session");
-        if (raw) {
+        if (raw && raw !== "null") {
             currentPatient = JSON.parse(raw);
+        } else if (raw === "null") {
+            currentPatient = null;
+        } else {
+            // Default to Master Patient Account on start
+            currentPatient = Object.assign({}, MASTER_ADMIN_PATIENT);
+            localStorage.setItem("labnexa_patient_session", JSON.stringify(currentPatient));
         }
-    } catch (e) {}
+    } catch (e) {
+        currentPatient = Object.assign({}, MASTER_ADMIN_PATIENT);
+    }
     updateAuthUI();
 }
 
@@ -361,7 +382,7 @@ function updateAuthUI() {
         if (homeUserCard) homeUserCard.style.display = "flex";
         if (homeUserName) homeUserName.textContent = currentPatient.name;
         if (homeUserAvatar) homeUserAvatar.textContent = firstLetter;
-        if (homeUserMeta) homeUserMeta.textContent = `ملف طبي: #${currentPatient.file_number || 'NX-ADM-001'} • ${currentPatient.wilaya || 'الجزائر'}`;
+        if (homeUserMeta) homeUserMeta.textContent = `ملف طبي: #${currentPatient.file_number || 'NX-ADM-001'} • ${currentPatient.wilaya || 'الجزائر العاصمة'}`;
 
         prefillBookingForm();
     } else {
@@ -383,46 +404,48 @@ function prefillBookingForm() {
     if (ageInput && !ageInput.value) ageInput.value = currentPatient.age || "";
 }
 
-// Render Profile Tab (Single source of truth: Auth Form if guest, Patient Dossier if logged in)
+// Render Profile Tab: Patient Health Dossier (with red Logout button) or HayatLink Auth Portal
 function renderProfileSection() {
     const container = document.getElementById("profileMainContainer");
     if (!container) return;
 
     if (!currentPatient) {
-        // RENDER LUXURY WORLD-CLASS AUTHENTICATION SCREEN IN TAB 5
+        // ==========================================
+        // HAYATLINK-STYLE LUXURY MEDICAL AUTH PORTAL
+        // ==========================================
         container.innerHTML = `
-            <div class="auth-profile-card">
-                <div style="text-align: center; margin-bottom: 12px;">
-                    <div class="auth-gate-badge">🛡️ بوابة حساب المريض المعتمد</div>
-                    <h2 style="font-size: 1.25rem; font-weight: 800; color: #0B1E36; margin: 4px 0;">تسجيل الدخول إلى حسابك</h2>
-                    <p class="text-muted text-sm">سجّل دخولك لمتابعة ملفك الطبي وأرشيف نتائجك وحجز مواعيدك بكل سرية</p>
+            <div class="hayatlink-auth-card">
+                <div style="text-align: center; margin-bottom: 14px;">
+                    <div class="hayatlink-badge">🏥 بوابة المريض الموحدة (Espace Patient)</div>
+                    <h2 style="font-size: 1.3rem; font-weight: 800; color: #0B1E36; margin: 4px 0;">تسجيل الدخول إلى حسابك</h2>
+                    <p class="text-muted text-sm">أدخل معلومات حسابك للاطلاع على الأرشيف الطبي ومتابعة نتائجك وحجز مواعيدك</p>
                 </div>
 
-                <!-- 1-Click Demo Fill for admin / admin123 -->
+                <!-- 1-Click Fast Login with admin / admin123 -->
                 <div class="quick-demo-box" onclick="quickFillAndLoginAdmin()">
-                    <div class="demo-badge-sparkle">⚡ الدخول السريع بحساب المنصة المعتمد</div>
-                    <strong>اضغط هنا للدخول الفوري ببيانات المريض:</strong>
+                    <div class="demo-badge-sparkle">⚡ حساب المنصة المعتمد (admin / admin123)</div>
+                    <strong>اضغط هنا للدخول الفوري بالحساب المعتمد:</strong>
                     <div class="demo-creds-preview">المعرف: <code>admin</code> • كلمة المرور: <code>admin123</code></div>
                 </div>
 
-                <!-- Auth Switcher Tabs -->
+                <!-- Switcher Tabs -->
                 <div class="gate-auth-tabs">
                     <button class="gate-tab-btn ${activeAuthTab === 'login' ? 'active' : ''}" onclick="toggleAuthTab('login')">تسجيل الدخول</button>
-                    <button class="gate-tab-btn ${activeAuthTab === 'register' ? 'active' : ''}" onclick="toggleAuthTab('register')">إنشاء حساب مريض</button>
+                    <button class="gate-tab-btn ${activeAuthTab === 'register' ? 'active' : ''}" onclick="toggleAuthTab('register')">فتح حساب جديد</button>
                 </div>
 
                 <!-- Login Form -->
                 <form id="profileLoginForm" style="display: ${activeAuthTab === 'login' ? 'block' : 'none'};" onsubmit="handleProfileLoginSubmit(event)">
                     <div class="form-group">
                         <label>رقم الهاتف، البريد، أو المعرف *</label>
-                        <input type="text" id="prof_login_id" class="form-input" required placeholder="admin أو 0550123456 أو البريد">
+                        <input type="text" id="prof_login_id" class="form-input" required value="admin" placeholder="admin أو 0550123456 أو البريد">
                     </div>
                     <div class="form-group">
                         <label>كلمة المرور *</label>
-                        <input type="password" id="prof_login_pass" class="form-input" required placeholder="••••••••">
+                        <input type="password" id="prof_login_pass" class="form-input" required value="admin123" placeholder="••••••••">
                     </div>
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; font-size: 0.75rem;">
-                        <label><input type="checkbox" checked> تذكر بياناتي</label>
+                        <label><input type="checkbox" checked> تذكر بياناتي على الهاتف</label>
                         <a href="javascript:void(0)" onclick="alert('لإعادة تعيين كلمة المرور، يرجى التواصل مع مخبر التحاليل')" style="color: #0066FF;">نسيت كلمة المرور؟</a>
                     </div>
                     <button type="submit" class="btn btn-primary btn-block btn-lg">دخول إلى حسابي الطبي 🔐</button>
@@ -471,14 +494,16 @@ function renderProfileSection() {
                 </form>
 
                 <div class="auth-trust-footer">
-                    <span>🔒 مشفر ومحمي بنظام أمني 256-Bit • مطابق لمعايير سرية البيانات الطبية</span>
+                    <span>🔒 مشفر ومحمي بنظام أمني 256-Bit • مطابق لمعايير سرية البيانات الطبية HayatLink</span>
                 </div>
             </div>
         `;
         return;
     }
 
-    // RENDER LOGGED-IN PATIENT DIGITAL HEALTH DOSSIER
+    // ==========================================
+    // LOGGED-IN PATIENT DIGITAL HEALTH DOSSIER
+    // ==========================================
     const pastBookings = getSavedBookings();
     const bookingsListHtml = pastBookings.length > 0 
         ? pastBookings.slice(0, 3).map(b => `
@@ -494,18 +519,19 @@ function renderProfileSection() {
 
     container.innerHTML = `
         <div class="card">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+            <!-- Header Row with Clean Logout Button -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; border-bottom: 1px solid #E2E8F0; padding-bottom: 12px;">
                 <div style="display: flex; align-items: center; gap: 12px;">
-                    <div class="user-avatar-circle" style="width: 48px; height: 48px; font-size: 1.3rem;">
+                    <div class="user-avatar-circle">
                         ${currentPatient.name.charAt(0)}
                     </div>
                     <div>
-                        <h3 style="font-size: 1.05rem; margin-bottom: 2px;">${currentPatient.name}</h3>
+                        <h3 style="font-size: 1.05rem; margin-bottom: 2px; color: #0B1E36;">${currentPatient.name}</h3>
                         <small class="text-muted">رقم الملف: #${currentPatient.file_number} • ${currentPatient.wilaya}</small>
                     </div>
                 </div>
-                <!-- Clean Logout Button -->
-                <button class="btn btn-sm btn-outline" style="border-color:#DC2626;color:#DC2626;" onclick="logoutPatient()">تسجيل الخروج 🚪</button>
+                <!-- PROMINENT RED LOGOUT BUTTON -->
+                <button class="btn-logout-danger" onclick="logoutPatient()">🚪 تسجيل الخروج</button>
             </div>
 
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px;">
@@ -538,20 +564,10 @@ function toggleAuthTab(tab) {
 }
 
 function quickFillAndLoginAdmin() {
-    currentPatient = {
-        name: "محمد بلقاسم (Patient Admin)",
-        phone: "0550123456",
-        email: "admin@labnexa.dz",
-        wilaya: "الجزائر العاصمة",
-        file_number: "NX-ADM-001",
-        age: "36 سنة",
-        gender: "male",
-        isMasterAdmin: true,
-        logged_at: new Date().toISOString()
-    };
+    currentPatient = Object.assign({}, MASTER_ADMIN_PATIENT);
     try { localStorage.setItem("labnexa_patient_session", JSON.stringify(currentPatient)); } catch(e){}
     updateAuthUI();
-    showToast("تم الدخول بنجاح بحساب المريض المعتمد (admin)");
+    showToast("مرحباً بك محمد بلقاسم! تم الدخول بحساب admin");
 }
 
 async function handleProfileLoginSubmit(event) {
@@ -567,17 +583,7 @@ async function handleProfileLoginSubmit(event) {
     const isAdminAccount = (identifier.toLowerCase() === "admin" || identifier === "0600000000" || identifier === "0550123456") && password === "admin123";
 
     if (isAdminAccount) {
-        currentPatient = {
-            name: "محمد بلقاسم (Patient Admin)",
-            phone: "0550123456",
-            email: "admin@labnexa.dz",
-            wilaya: "الجزائر العاصمة",
-            file_number: "NX-ADM-001",
-            age: "36 سنة",
-            gender: "male",
-            isMasterAdmin: true,
-            logged_at: new Date().toISOString()
-        };
+        currentPatient = Object.assign({}, MASTER_ADMIN_PATIENT);
     } else {
         currentPatient = {
             name: identifier.includes("@") ? identifier.split("@")[0] : "محمد بلقاسم",
@@ -643,12 +649,13 @@ async function handleProfileRegisterSubmit(event) {
     showToast(`تم إنشاء حسابك الطبي بنجاح! مرحباً بك`);
 }
 
-// Clean Logout: resets patient session, updates UI, and renders the luxury Login screen in place!
+// Clean Logout: resets patient session, and immediately displays the HayatLink-style Auth Portal
 function logoutPatient() {
     currentPatient = null;
-    try { localStorage.removeItem("labnexa_patient_session"); } catch(e){}
+    try { localStorage.setItem("labnexa_patient_session", "null"); } catch(e){}
+    activeAuthTab = "login";
     updateAuthUI();
-    showToast("تم تسجيل الخروج بنجاح");
+    showToast("تم تسجيل الخروج بنجاح! ننتظر عودتكم");
 }
 
 // ==========================================================================
@@ -683,10 +690,7 @@ function switchTab(tabId) {
         renderProfileSection();
     }
     if (tabId === "results") {
-        if (currentPatient && currentPatient.isMasterAdmin) {
-            document.getElementById("trackInput").value = "admin";
-            fetchResults();
-        }
+        fetchResults();
     }
 
     window.scrollTo({ top: 0, behavior: "smooth" });

@@ -68,3 +68,4 @@ Write-Host "=== BUILD SUCCESSFUL! ==="
 $finalFile = Get-Item $outApk
 Write-Host "APK Created at: $($finalFile.FullName)"
 Write-Host "APK Size: $([math]::Round($finalFile.Length / 1MB, 2)) MB ($($finalFile.Length) bytes)"
+

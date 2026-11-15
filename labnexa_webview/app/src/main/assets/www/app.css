@@ -276,8 +276,8 @@ body {
     gap: 10px;
 }
 .user-avatar-circle {
-    width: 42px;
-    height: 42px;
+    width: 44px;
+    height: 44px;
     border-radius: 50%;
     background: #0066FF;
     color: #fff;
@@ -285,12 +285,12 @@ body {
     align-items: center;
     justify-content: center;
     font-weight: 800;
-    font-size: 1.1rem;
+    font-size: 1.15rem;
     box-shadow: 0 4px 10px rgba(0, 102, 255, 0.25);
 }
 .user-details strong {
     display: block;
-    font-size: 0.92rem;
+    font-size: 0.95rem;
     color: var(--text-primary);
 }
 .user-details small {
@@ -480,6 +480,27 @@ body {
     padding: 5px 10px;
     font-size: 0.72rem;
     border-radius: var(--radius-md);
+}
+
+/* Red Prominent Logout Button */
+.btn-logout-danger {
+    background: #FEE2E2;
+    border: 1.5px solid #EF4444;
+    color: #DC2626;
+    font-weight: 800;
+    padding: 6px 14px;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    font-size: 0.78rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    transition: all 0.2s;
+}
+.btn-logout-danger:active {
+    background: #DC2626;
+    color: #fff;
+    transform: scale(0.96);
 }
 
 /* Tracking Input Group */
@@ -944,22 +965,23 @@ body {
 }
 
 /* ==========================================================================
-   GLOBAL AUTH SCREEN IN PROFILE TAB
+   HAYATLINK-STYLE LUXURY MEDICAL AUTH PORTAL
    ========================================================================== */
-.auth-profile-card {
+.hayatlink-auth-card {
     background: #ffffff;
-    border: 1px solid rgba(186, 215, 248, 0.8);
+    border: 1px solid rgba(186, 215, 248, 0.85);
     border-radius: var(--radius-xl);
     padding: 24px 18px;
-    box-shadow: 0 10px 30px rgba(0, 50, 150, 0.08);
+    box-shadow: 0 12px 32px rgba(0, 82, 212, 0.1);
+    margin-bottom: 16px;
 }
-.auth-gate-badge {
+.hayatlink-badge {
     display: inline-block;
     background: #E0E7FF;
     color: #4338CA;
     font-size: 0.72rem;
     font-weight: 800;
-    padding: 3px 12px;
+    padding: 4px 12px;
     border-radius: var(--radius-full);
     margin-bottom: 8px;
 }
