@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#0052D4">
-    <title>LabNexa - مخبر التحاليل الطبية</title>
+    <title>LabNexa - شبكة المخابر الطبية المعتمدة SaaS</title>
     <link rel="stylesheet" href="app.css">
 </head>
 <body>
@@ -22,19 +22,35 @@
                     <img src="logo.png" alt="LabNexa" class="app-logo" onerror="this.style.display='none'">
                     <div>
                         <div class="brand-name">
-                            <span>LabNexa</span>
-                            <span class="verified-badge">✓</span>
+                            <span>LabNexa SaaS</span>
+                            <span class="saas-badge">شبكة مخابر</span>
                         </div>
                         <div class="lab-status">
                             <span class="status-dot"></span>
-                            <span id="txt-status">المخبر مفتوح (8:00 - 18:00)</span>
+                            <span id="headerLabStatus">متصل بالشبكة الطبية</span>
                         </div>
                     </div>
                 </div>
                 <div class="header-actions">
                     <button class="lang-pill" id="langToggle" title="Changer de langue">FR</button>
-                    <a href="tel:0550123456" class="icon-circle" title="اتصال مباشر">📞</a>
+                    <!-- Auth Profile Avatar / Login Button -->
+                    <button class="btn-auth-pill" id="headerAuthBtn" onclick="openAuthModal()">
+                        <span id="headerAuthIcon">👤</span>
+                        <span id="headerAuthLabel">دخول</span>
+                    </button>
                 </div>
+            </div>
+
+            <!-- SaaS Active Laboratory Selector Bar -->
+            <div class="active-lab-bar" onclick="openLabSelectorModal()">
+                <div class="active-lab-info">
+                    <span class="lab-icon-pin">🏥</span>
+                    <div class="active-lab-text">
+                        <small class="lab-label-tag">المخبر المختار حالياً:</small>
+                        <strong id="activeLabNameDisplay">مخبر LabNexa - الجزائر وسط</strong>
+                    </div>
+                </div>
+                <button class="btn-switch-lab">تغيير المخبر ▾</button>
             </div>
         </header>
 
@@ -45,44 +61,56 @@
             <section id="tab-home" class="tab-pane active">
                 <!-- Welcome Banner -->
                 <div class="hero-card">
-                    <div class="hero-badge">⭐ رعاية مخبرية بمعايير دولية</div>
-                    <h1 class="hero-title" id="txt-hero-title">صحتك تبدأ بدقة التحليل</h1>
-                    <p class="hero-sub" id="txt-hero-sub">حجز مواعيد فورية، نتائج دقيقة، وسحب عينات في المنزل أينما كنت.</p>
+                    <div class="hero-badge">⭐ شبكة المخابر الطبية المعتمدة في الجزائر</div>
+                    <h1 class="hero-title" id="txt-hero-title">اختر مخبرك، احجز موعدك، وتابع نتائجك</h1>
+                    <p class="hero-sub" id="txt-hero-sub">منصة SaaS موحدة تربطك بأرقى مخابر التحاليل الطبية مع سحب منزلي للعينات ودقة معتمدة دولياً.</p>
                     
                     <div class="hero-cta-row">
                         <button class="btn btn-primary" onclick="switchTab('booking')">
-                            <span>📅 حجز موعد جديد</span>
+                            <span>📅 حجز موعد فوري</span>
                         </button>
-                        <button class="btn btn-glass" onclick="switchTab('results')">
-                            <span>🔍 تتبع نتيجتي</span>
+                        <button class="btn btn-glass" onclick="openLabSelectorModal()">
+                            <span>🏥 استكشاف المخابر</span>
                         </button>
                     </div>
                 </div>
 
+                <!-- Patient Quick Info (If Logged In) -->
+                <div id="homeUserCard" class="card user-welcome-card" style="display: none;">
+                    <div class="user-card-content">
+                        <div class="user-avatar-circle" id="homeUserAvatar">م</div>
+                        <div class="user-details">
+                            <strong id="homeUserName">محمد بلقاسم</strong>
+                            <small id="homeUserMeta">ملف طبي: #NX-8421 • ولاية الجزائر</small>
+                        </div>
+                    </div>
+                    <button class="btn btn-sm btn-outline" onclick="switchTab('profile')">ملفي الصحي</button>
+                </div>
+
                 <!-- Quick Services Grid -->
                 <h3 class="section-title">
-                    <span id="txt-services-title">الخدمات السريعة</span>
+                    <span id="txt-services-title">الخدمات والمميزات السريعة</span>
                 </h3>
                 <div class="services-grid">
+                    <div class="service-card" onclick="openLabSelectorModal()">
+                        <div class="service-icon" style="background: rgba(0, 102, 255, 0.12); color: #0066FF;">🏥</div>
+                        <h4>شبكة المخابر</h4>
+                        <p id="activeLabWilayaSummary">6 مخابر معتمدة</p>
+                    </div>
                     <div class="service-card" onclick="switchTab('booking')">
-                        <div class="service-icon" style="background: rgba(0, 102, 255, 0.12); color: #0066FF;">📅</div>
+                        <div class="service-icon" style="background: rgba(16, 185, 129, 0.12); color: #10B981;">📅</div>
                         <h4 id="txt-srv-book">حجز موعد</h4>
                         <p id="txt-srv-book-sub">مسبق بدون انتظار</p>
                     </div>
                     <div class="service-card" onclick="switchTab('results')">
-                        <div class="service-icon" style="background: rgba(16, 185, 129, 0.12); color: #10B981;">📊</div>
-                        <h4 id="txt-srv-res">النتائج الفورية</h4>
-                        <p id="txt-srv-res-sub">تحميل التقرير الطبي</p>
+                        <div class="service-icon" style="background: rgba(245, 158, 11, 0.12); color: #F59E0B;">📊</div>
+                        <h4 id="txt-srv-res">النتائج الطبية</h4>
+                        <p id="txt-srv-res-sub">استعلام وتنزيل PDF</p>
                     </div>
                     <div class="service-card" onclick="openHomeSamplingModal()">
-                        <div class="service-icon" style="background: rgba(245, 158, 11, 0.12); color: #F59E0B;">🩸</div>
+                        <div class="service-icon" style="background: rgba(220, 38, 38, 0.12); color: #DC2626;">🩸</div>
                         <h4 id="txt-srv-home">سحب منزلي</h4>
-                        <p id="txt-srv-home-sub">فريق تمريض لمنزلك</p>
-                    </div>
-                    <div class="service-card" onclick="switchTab('catalog')">
-                        <div class="service-icon" style="background: rgba(139, 92, 246, 0.12); color: #8B5CF6;">📖</div>
-                        <h4 id="txt-srv-cat">دليل الأسعار</h4>
-                        <p id="txt-srv-cat-sub">شروط الصيام والتحاليل</p>
+                        <p id="txt-srv-home-sub">فريق تمريض متخصص</p>
                     </div>
                 </div>
 
@@ -90,9 +118,9 @@
                 <div class="card card-tracking">
                     <div class="card-header-line">
                         <span class="icon-accent">⚡</span>
-                        <h3 id="txt-track-box-title">استعلام سريع عن النتائج</h3>
+                        <h3 id="txt-track-box-title">استعلام فوري عن النتائج</h3>
                     </div>
-                    <p class="text-muted" id="txt-track-box-sub">أدخل رقم الحجز أو رقم الهاتف لعرض النتيجة وتحميل الملف:</p>
+                    <p class="text-muted" id="txt-track-box-sub">أدخل رقم الهاتف أو رمز الحجز للاطلاع الفوري على نتائج التحاليل:</p>
                     <div class="search-input-group">
                         <input type="text" id="homeQuickTrackInput" placeholder="مثال: 0550123456 أو 2024-001" class="form-input">
                         <button class="btn btn-primary" onclick="handleQuickTrack()">
@@ -101,52 +129,39 @@
                     </div>
                 </div>
 
-                <!-- Lab Highlights -->
-                <div class="info-card-row">
-                    <div class="info-badge-card">
-                        <span class="badge-icon">🔬</span>
-                        <div>
-                            <strong>أجهزة Mindray & Roche</strong>
-                            <small>دقة مخبرية مؤتمتة بنسبة 99.9%</small>
-                        </div>
-                    </div>
-                    <div class="info-badge-card">
-                        <span class="badge-icon">⚡</span>
-                        <div>
-                            <strong>نتائج خلال ساعتين</strong>
-                            <small>للتحاليل الاستعجالية والروتينية</small>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Contact & Location Box -->
-                <div class="card location-card">
-                    <div class="loc-details">
-                        <h4>📍 موقع المخبر ومواعيد العمل</h4>
-                        <p class="text-muted">الجزائر العاصمة • حي النرجس، عمارة 14</p>
-                        <p class="text-sm">🕒 السبت - الخميس: 07:30 - 18:00 | الجمعة: 08:00 - 12:00</p>
-                    </div>
-                    <div class="loc-actions">
-                        <a href="https://maps.google.com" target="_blank" class="btn btn-outline btn-sm">خرائط Google</a>
-                        <a href="https://wa.me/213550123456" class="btn btn-whatsapp btn-sm">واتساب مباشر</a>
-                    </div>
+                <!-- Active Laboratory Details Preview Card -->
+                <div class="card current-lab-card" id="homeCurrentLabCard">
+                    <!-- Populated dynamically via app.js -->
                 </div>
             </section>
 
             <!-- TAB 2: BOOKING -->
             <section id="tab-booking" class="tab-pane">
                 <div class="page-header">
-                    <h2>📅 حجز موعد مخبري</h2>
-                    <p class="text-muted">احجز موعدك بسهولة لتجنب الانتظار والحصول على الأولوية</p>
+                    <h2>📅 حجز موعد مخبري (SaaS)</h2>
+                    <p class="text-muted" id="bookingSubHeader">احجز موعدك لدى مخبرك المفضل مع حاسبة أسعار فورية</p>
+                </div>
+
+                <!-- Selected Lab Reminder Box -->
+                <div class="lab-booking-banner" onclick="openLabSelectorModal()">
+                    <div>
+                        <small>المخبر المختار للحجز:</small>
+                        <strong id="bookingLabName">مخبر LabNexa - الجزائر وسط</strong>
+                        <div class="text-sm" id="bookingLabAddress" style="color: #64748B;">شارع ديدوش مراد، الجزائر العاصمة</div>
+                    </div>
+                    <button type="button" class="btn btn-sm btn-outline">تغيير المخبر</button>
                 </div>
 
                 <form id="bookingForm" onsubmit="handleBookingSubmit(event)">
                     <!-- Step 1: Patient Data -->
                     <div class="card form-section">
-                        <h4 class="form-section-title">1. معلومات المريض</h4>
+                        <div class="form-section-header">
+                            <h4 class="form-section-title">1. معلومات المريض</h4>
+                            <span id="bookingAuthHint" class="auth-hint-tag" onclick="openAuthModal()">لديك حساب؟ سجّل الدخول لتعبئة تلقائية</span>
+                        </div>
                         
                         <div class="form-group">
-                            <label>الاسم الكامل *</label>
+                            <label>الاسم الكامل للمريض *</label>
                             <input type="text" id="book_name" class="form-input" required placeholder="مثال: محمد بلقاسم">
                         </div>
 
@@ -161,25 +176,40 @@
                             </div>
                         </div>
 
-                        <div class="form-group">
-                            <label>الجنس</label>
-                            <div class="gender-selector">
-                                <label class="radio-chip">
-                                    <input type="radio" name="book_gender" value="male" checked>
-                                    <span>ذكر 👨</span>
-                                </label>
-                                <label class="radio-chip">
-                                    <input type="radio" name="book_gender" value="female">
-                                    <span>أنثى 👩</span>
-                                </label>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>الولاية / المدينة</label>
+                                <select id="book_wilaya" class="form-input">
+                                    <option value="16">16 - الجزائر (Alger)</option>
+                                    <option value="31">31 - وهران (Oran)</option>
+                                    <option value="25">25 - قسنطينة (Constantine)</option>
+                                    <option value="19">19 - سطيف (Sétif)</option>
+                                    <option value="09">09 - البليدة (Blida)</option>
+                                    <option value="23">23 - عنابة (Annaba)</option>
+                                    <option value="15">15 - تيزي وزو (Tizi Ouzou)</option>
+                                    <option value="35">35 - بومرداس (Boumerdès)</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>الجنس</label>
+                                <div class="gender-selector">
+                                    <label class="radio-chip">
+                                        <input type="radio" name="book_gender" value="male" checked>
+                                        <span>ذكر 👨</span>
+                                    </label>
+                                    <label class="radio-chip">
+                                        <input type="radio" name="book_gender" value="female">
+                                        <span>أنثى 👩</span>
+                                    </label>
+                                </div>
                             </div>
                         </div>
                     </div>
 
                     <!-- Step 2: Choose Analyses -->
                     <div class="card form-section">
-                        <h4 class="form-section-title">2. اختر التحاليل المطلوبة</h4>
-                        <p class="text-muted text-sm">يمكنك اختيار أكثر من تحليل (أو تركها فارغة إن كان معك وصفة طبية):</p>
+                        <h4 class="form-section-title">2. اختر التحاليل الطبية</h4>
+                        <p class="text-muted text-sm">حدد التحاليل المطلوبة لحساب التكلفة التقديرية وشروط الصيام:</p>
                         
                         <div class="analysis-select-grid" id="bookingAnalysisList">
                             <!-- Populated dynamically via JS -->
@@ -187,24 +217,27 @@
 
                         <!-- Live Total Estimate -->
                         <div class="price-summary-box">
-                            <span>المجموع التقديري:</span>
+                            <div>
+                                <span>المجموع التقديري:</span>
+                                <small class="d-block text-muted" id="selectedCountLabel">2 تحاليل محددة</small>
+                            </div>
                             <strong id="bookingTotalPrice">0 دج</strong>
                         </div>
                     </div>
 
                     <!-- Step 3: Date & Time -->
                     <div class="card form-section">
-                        <h4 class="form-section-title">3. التاريخ والتوقيت المناسب</h4>
+                        <h4 class="form-section-title">3. التاريخ والتوقيت</h4>
                         
                         <div class="form-row">
                             <div class="form-group">
-                                <label>اليوم المفضل *</label>
+                                <label>تاريخ الموعد *</label>
                                 <input type="date" id="book_date" class="form-input" required>
                             </div>
                             <div class="form-group">
-                                <label>التوقيت المفضل *</label>
+                                <label>الفترة المفضلة *</label>
                                 <select id="book_time" class="form-input" required>
-                                    <option value="07:30 - 08:30">07:30 - 08:30 (صباحاً)</option>
+                                    <option value="07:30 - 08:30">07:30 - 08:30 (صباحاً - صائم)</option>
                                     <option value="08:30 - 09:30" selected>08:30 - 09:30 (صباحاً)</option>
                                     <option value="09:30 - 10:30">09:30 - 10:30 (صباحاً)</option>
                                     <option value="10:30 - 11:30">10:30 - 11:30 (صباحاً)</option>
@@ -219,7 +252,7 @@
                                 <span class="checkmark"></span>
                                 <div>
                                     <strong>طلب سحب عينات في المنزل 🚗</strong>
-                                    <p class="text-muted text-sm">يصلك ممرض مؤهل إلى عنوان منزلك لسحب الدم براحة وأمان.</p>
+                                    <p class="text-muted text-sm">يصلك ممرض مؤهل من المخبر المختار لسحب العينات بأمان في راحة منزلك.</p>
                                 </div>
                             </label>
                         </div>
@@ -227,7 +260,7 @@
 
                     <!-- Submit Button -->
                     <button type="submit" class="btn btn-primary btn-block btn-lg" id="btnSubmitBooking">
-                        <span>تأكيد واستخراج تذكرة الموعد 🎟️</span>
+                        <span>تأكيد الحجز واستخراج التذكرة 🎟️</span>
                     </button>
                 </form>
             </section>
@@ -235,8 +268,8 @@
             <!-- TAB 3: RESULTS -->
             <section id="tab-results" class="tab-pane">
                 <div class="page-header">
-                    <h2>📊 استعلام وتحميل النتائج</h2>
-                    <p class="text-muted">نتائجك المخبرية المعتمدة مع توضيح ذكي لمؤشرات التحليل</p>
+                    <h2>📊 استعلام ونتائج التحاليل</h2>
+                    <p class="text-muted">الاطلاع على تقاريرك الطبية الصادرة من جميع مخابر شبكة LabNexa</p>
                 </div>
 
                 <div class="card">
@@ -260,8 +293,8 @@
             <!-- TAB 4: CATALOG -->
             <section id="tab-catalog" class="tab-pane">
                 <div class="page-header">
-                    <h2>📖 دليل التحاليل والأسعار</h2>
-                    <p class="text-muted">قائمة شاملة بالتحاليل المتوفرة في المخبر وشروط إجرائها</p>
+                    <h2>📖 دليل التحاليل الطبية والأسعار</h2>
+                    <p class="text-muted">قائمة الفحوصات المخبرية المعتمدة وشروط الصيام ووقت الجاهزية</p>
                 </div>
 
                 <div class="card search-filter-card">
@@ -280,20 +313,39 @@
                 </div>
             </section>
 
-            <!-- TAB 5: CONTACT & LAB INFO -->
-            <section id="tab-contact" class="tab-pane">
+            <!-- TAB 5: PATIENT PROFILE & SAAS LABS -->
+            <section id="tab-profile" class="tab-pane">
                 <div class="page-header">
-                    <h2>🏥 معلومات المخبر والتواصل</h2>
-                    <p class="text-muted">نحن في خدمتكم للإجابة عن كافة استفساراتكم الطبية</p>
+                    <h2>👤 حساب المريض وشبكة المخابر</h2>
+                    <p class="text-muted">إدارة حسابك، مواعيدك السابقة، واختيار المخابر المعتمدة</p>
                 </div>
 
+                <!-- Profile Card or Auth Prompt -->
+                <div id="profileUserSection">
+                    <!-- Rendered dynamically depending on login state -->
+                </div>
+
+                <!-- SaaS Laboratories Management Card -->
                 <div class="card">
+                    <div class="card-header-line">
+                        <span class="icon-accent">🏥</span>
+                        <h4>شبكة المخابر الطبية المعتمدة (SaaS)</h4>
+                    </div>
+                    <p class="text-muted text-sm">يمكنك اختيار أي مخبر في أي ولاية وإجراء تحاليلك بكل أريحية:</p>
+                    <button class="btn btn-primary btn-block btn-sm" style="margin-top: 10px;" onclick="openLabSelectorModal()">
+                        استعراض وتغيير المخبر الحالي 🔍
+                    </button>
+                </div>
+
+                <!-- Support & Emergency -->
+                <div class="card">
+                    <h4 style="margin-bottom: 10px;">📞 الدعم والمساعدة المباشرة</h4>
                     <div class="contact-action-list">
                         <a href="tel:0550123456" class="contact-item">
                             <div class="contact-icon" style="background: rgba(0, 102, 255, 0.1); color: #0066FF;">📞</div>
                             <div class="contact-text">
-                                <strong>اتصال هاتفي مباشر</strong>
-                                <small>0550 12 34 56 / 021 00 00 00</small>
+                                <strong>الرقم الموحد لشبكة LabNexa</strong>
+                                <small>0550 12 34 56 (طيلة أيام الأسبوع)</small>
                             </div>
                             <span class="chevron">›</span>
                         </a>
@@ -301,37 +353,12 @@
                         <a href="https://wa.me/213550123456" class="contact-item">
                             <div class="contact-icon" style="background: rgba(16, 185, 129, 0.1); color: #10B981;">💬</div>
                             <div class="contact-text">
-                                <strong>محادثة عبر واتساب</strong>
-                                <small>استقبال الوصفات الطبية والاستفسارات</small>
-                            </div>
-                            <span class="chevron">›</span>
-                        </a>
-
-                        <a href="mailto:contact@labnexa.dz" class="contact-item">
-                            <div class="contact-icon" style="background: rgba(139, 92, 246, 0.1); color: #8B5CF6;">✉️</div>
-                            <div class="contact-text">
-                                <strong>البريد الإلكتروني</strong>
-                                <small>contact@labnexa.dz</small>
+                                <strong>خدمة العملاء عبر واتساب</strong>
+                                <small>إرسال الوصفات الطبية والاستشارات</small>
                             </div>
                             <span class="chevron">›</span>
                         </a>
                     </div>
-                </div>
-
-                <div class="card faq-card">
-                    <h4>❓ أسئلة شائعة</h4>
-                    <details class="faq-item">
-                        <summary>متى يجب أن أكون صائماً قبل التحليل؟</summary>
-                        <p>يُشترط الصيام من 10 إلى 12 ساعة لتحاليل السكر في الدم، الكولسترول، الدهون الثلاثية، مع إمكانية شرب الماء فقط.</p>
-                    </details>
-                    <details class="faq-item">
-                        <summary>كيف يمكنني استلام نتائجي؟</summary>
-                        <p>تصلك نتائجك فور جاهزيتها عبر هذا التطبيق في تبويب "النتائج"، أو يمكنك استلامها مطبوعة من مقر المخبر.</p>
-                    </details>
-                    <details class="faq-item">
-                        <summary>كيف أطلب خدمة سحب الدم في المنزل؟</summary>
-                        <p>يمكنك تفعيل خيار "سحب منزلي" أثناء حجز الموعد أو الاتصال بنا مباشرة على رقم الواتساب.</p>
-                    </details>
                 </div>
             </section>
 
@@ -355,13 +382,112 @@
                 <span class="nav-icon">📖</span>
                 <span class="nav-label" id="lbl-nav-cat">التحاليل</span>
             </button>
-            <button class="nav-item" data-tab="contact" onclick="switchTab('contact')">
-                <span class="nav-icon">🏥</span>
-                <span class="nav-label" id="lbl-nav-lab">المخبر</span>
+            <button class="nav-item" data-tab="profile" onclick="switchTab('profile')">
+                <span class="nav-icon">👤</span>
+                <span class="nav-label" id="lbl-nav-prof">حسابي</span>
             </button>
         </nav>
 
-        <!-- Digital Booking Voucher Modal -->
+        <!-- MODAL 1: SaaS Laboratory Selector Modal -->
+        <div id="labSelectorModal" class="modal-backdrop">
+            <div class="modal-card modal-lg">
+                <div class="modal-header">
+                    <div>
+                        <h3>🏥 شبكة المخابر المعتمدة (SaaS)</h3>
+                        <small class="text-muted">اختر المخبر الأقرب إليك لإجراء التحاليل وحجز الموعد</small>
+                    </div>
+                    <button class="btn-close" onclick="closeLabSelectorModal()">✕</button>
+                </div>
+                
+                <div class="wilaya-filter-bar">
+                    <button class="wilaya-pill active" onclick="filterLabsByWilaya('all')">كل الولايات</button>
+                    <button class="wilaya-pill" onclick="filterLabsByWilaya('الجزائر')">الجزائر (Alger)</button>
+                    <button class="wilaya-pill" onclick="filterLabsByWilaya('وهران')">وهران (Oran)</button>
+                    <button class="wilaya-pill" onclick="filterLabsByWilaya('قسنطينة')">قسنطينة</button>
+                    <button class="wilaya-pill" onclick="filterLabsByWilaya('سطيف')">سطيف</button>
+                    <button class="wilaya-pill" onclick="filterLabsByWilaya('البليدة')">البليدة</button>
+                </div>
+
+                <div class="labs-list-container" id="labsListContainer">
+                    <!-- Populated dynamically via JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL 2: Global Auth (Login & Register) Modal -->
+        <div id="authModal" class="modal-backdrop">
+            <div class="modal-card">
+                <div class="modal-header">
+                    <div class="auth-tabs">
+                        <button class="auth-tab-btn active" id="tabBtnLogin" onclick="switchAuthTab('login')">تسجيل الدخول</button>
+                        <button class="auth-tab-btn" id="tabBtnRegister" onclick="switchAuthTab('register')">حساب جديد</button>
+                    </div>
+                    <button class="btn-close" onclick="closeAuthModal()">✕</button>
+                </div>
+
+                <!-- Login Form -->
+                <form id="loginForm" onsubmit="handleLoginSubmit(event)">
+                    <div class="form-group">
+                        <label>رقم الهاتف أو البريد الإلكتروني *</label>
+                        <input type="text" id="login_identifier" class="form-input" required placeholder="05 / 06 / 07... أو البريد">
+                    </div>
+                    <div class="form-group">
+                        <label>كلمة المرور *</label>
+                        <input type="password" id="login_password" class="form-input" required placeholder="••••••••">
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; font-size: 0.75rem;">
+                        <label><input type="checkbox" checked> تذكر بياناتي</label>
+                        <a href="javascript:void(0)" onclick="alert('يرجى الاتصال بالمخبر لإعادة تعيين كلمة المرور برقم هاتفك')" style="color: #0066FF;">نسيت كلمة المرور؟</a>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block btn-lg">دخول إلى حسابي</button>
+                </form>
+
+                <!-- Register Form -->
+                <form id="registerForm" style="display: none;" onsubmit="handleRegisterSubmit(event)">
+                    <div class="form-group">
+                        <label>الاسم الكامل *</label>
+                        <input type="text" id="reg_name" class="form-input" required placeholder="محمد بلقاسم">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>رقم الهاتف *</label>
+                            <input type="tel" id="reg_phone" class="form-input" required placeholder="05 / 06 / 07...">
+                        </div>
+                        <div class="form-group">
+                            <label>الولاية *</label>
+                            <select id="reg_wilaya" class="form-input">
+                                <option value="الجزائر">16 - الجزائر العاصمة</option>
+                                <option value="وهران">31 - وهران</option>
+                                <option value="قسنطينة">25 - قسنطينة</option>
+                                <option value="سطيف">19 - سطيف</option>
+                                <option value="البليدة">09 - البليدة</option>
+                                <option value="عنابة">23 - عنابة</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>العمر أو سنة الميلاد</label>
+                            <input type="text" id="reg_age" class="form-input" placeholder="32">
+                        </div>
+                        <div class="form-group">
+                            <label>الجنس</label>
+                            <select id="reg_gender" class="form-input">
+                                <option value="male">ذكر</option>
+                                <option value="female">أنثى</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>كلمة المرور *</label>
+                        <input type="password" id="reg_password" class="form-input" required minlength="6" placeholder="6 أحرف أو أرقام على الأقل">
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block btn-lg">إنشاء حساب فوري</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- MODAL 3: Digital Booking Voucher Modal -->
         <div id="ticketModal" class="modal-backdrop">
             <div class="modal-card">
                 <div class="modal-header">

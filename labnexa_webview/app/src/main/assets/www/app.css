@@ -1,5 +1,5 @@
 /* ==========================================================================
-   LabNexa Mobile Native Design System
+   LabNexa Mobile Native Design System (SaaS Multi-Lab Edition)
    Color Palette: Deep Luxury Medical Blue (#0066FF, #0A2540, #EDF5FD, #00D2FF)
    ========================================================================== */
 
@@ -13,7 +13,7 @@
     --accent-crimson: #DC2626;
 
     --bg-main: #EDF5FD;
-    --bg-card: rgba(255, 255, 255, 0.92);
+    --bg-card: rgba(255, 255, 255, 0.94);
     --border-card: rgba(186, 215, 248, 0.7);
     --shadow-soft: 0 10px 25px -5px rgba(2, 44, 91, 0.08), 0 8px 10px -6px rgba(2, 44, 91, 0.04);
     --shadow-card: 0 4px 20px rgba(0, 82, 212, 0.07);
@@ -47,7 +47,7 @@ body {
     color: var(--text-primary);
     overflow-x: hidden;
     min-height: 100vh;
-    padding-bottom: 75px; /* space for bottom nav */
+    padding-bottom: 75px;
 }
 
 /* Ambient Glows */
@@ -85,14 +85,14 @@ body {
 }
 
 /* ==========================================================================
-   App Header
+   App Header & SaaS Lab Bar
    ========================================================================== */
 .app-header {
-    background: rgba(255, 255, 255, 0.85);
+    background: rgba(255, 255, 255, 0.88);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     border-bottom: 1px solid var(--border-card);
-    padding: 12px 16px;
+    padding: 10px 14px;
     position: sticky;
     top: 0;
     z-index: 100;
@@ -101,6 +101,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-bottom: 8px;
 }
 .brand-info {
     display: flex;
@@ -120,23 +121,20 @@ body {
     color: var(--text-primary);
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 5px;
 }
 .brand-name span:first-child {
     background: linear-gradient(135deg, #0052D4, #0066FF);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
-.verified-badge {
-    background: #0066FF;
-    color: #fff;
+.saas-badge {
+    background: #E0E7FF;
+    color: #4338CA;
     font-size: 0.65rem;
-    width: 15px;
-    height: 15px;
-    border-radius: 50%;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+    font-weight: 800;
+    padding: 2px 7px;
+    border-radius: var(--radius-full);
 }
 .lab-status {
     font-size: 0.72rem;
@@ -161,31 +159,82 @@ body {
     background: var(--primary-light);
     color: var(--primary);
     border: 1px solid rgba(0, 102, 255, 0.2);
-    padding: 5px 12px;
+    padding: 4px 10px;
     border-radius: var(--radius-full);
     font-weight: 700;
     font-size: 0.75rem;
     cursor: pointer;
 }
-.icon-circle {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    background: var(--primary-light);
+.btn-auth-pill {
+    background: #0066FF;
+    color: #fff;
+    border: none;
+    padding: 5px 12px;
+    border-radius: var(--radius-full);
+    font-size: 0.75rem;
+    font-weight: 700;
+    cursor: pointer;
     display: flex;
     align-items: center;
-    justify-content: center;
-    text-decoration: none;
-    font-size: 1rem;
+    gap: 5px;
+    box-shadow: 0 3px 10px rgba(0, 102, 255, 0.25);
+}
+
+/* SaaS Lab Switcher Bar */
+.active-lab-bar {
+    background: #F0F6FD;
+    border: 1px solid var(--border-card);
+    border-radius: var(--radius-md);
+    padding: 8px 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.15s;
+}
+.active-lab-bar:active {
+    background: #E1EEFB;
+}
+.active-lab-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    overflow: hidden;
+}
+.lab-icon-pin {
+    font-size: 1.15rem;
+}
+.active-lab-text {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.lab-label-tag {
+    display: block;
+    font-size: 0.65rem;
+    color: var(--text-muted);
+}
+.active-lab-text strong {
+    font-size: 0.8rem;
+    color: var(--text-primary);
+}
+.btn-switch-lab {
+    background: #fff;
+    border: 1px solid var(--border-card);
+    border-radius: var(--radius-full);
+    padding: 3px 8px;
+    font-size: 0.68rem;
+    font-weight: 700;
     color: var(--primary);
-    border: 1px solid rgba(0, 102, 255, 0.15);
+    cursor: pointer;
+    white-space: nowrap;
 }
 
 /* ==========================================================================
    Content Area & Tabs
    ========================================================================== */
 .app-content {
-    padding: 16px;
+    padding: 14px;
     flex: 1;
 }
 .tab-pane {
@@ -201,9 +250,7 @@ body {
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* ==========================================================================
-   Cards & Layout Components
-   ========================================================================== */
+/* Cards */
 .card {
     background: var(--bg-card);
     border: 1px solid var(--border-card);
@@ -215,13 +262,49 @@ body {
     -webkit-backdrop-filter: blur(12px);
 }
 
+/* User Welcome Card (Logged In) */
+.user-welcome-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(135deg, rgba(232, 242, 255, 0.9) 0%, rgba(255, 255, 255, 0.95) 100%);
+    border: 1px solid #BAE6FD;
+}
+.user-card-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.user-avatar-circle {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: #0066FF;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 1.1rem;
+    box-shadow: 0 4px 10px rgba(0, 102, 255, 0.25);
+}
+.user-details strong {
+    display: block;
+    font-size: 0.92rem;
+    color: var(--text-primary);
+}
+.user-details small {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+}
+
 /* Hero Card */
 .hero-card {
     background: linear-gradient(135deg, #0052D4 0%, #0066FF 60%, #0099FF 100%);
     color: #fff;
     border-radius: var(--radius-xl);
-    padding: 22px 18px;
-    margin-bottom: 18px;
+    padding: 20px 16px;
+    margin-bottom: 16px;
     box-shadow: 0 12px 28px rgba(0, 82, 212, 0.25);
     position: relative;
     overflow: hidden;
@@ -240,20 +323,20 @@ body {
     display: inline-block;
     background: rgba(255, 255, 255, 0.2);
     border: 1px solid rgba(255, 255, 255, 0.3);
-    padding: 4px 12px;
+    padding: 3px 10px;
     border-radius: var(--radius-full);
-    font-size: 0.75rem;
+    font-size: 0.72rem;
     font-weight: 700;
     margin-bottom: 10px;
 }
 .hero-title {
-    font-size: 1.35rem;
+    font-size: 1.28rem;
     font-weight: 800;
-    line-height: 1.3;
+    line-height: 1.35;
     margin-bottom: 6px;
 }
 .hero-sub {
-    font-size: 0.82rem;
+    font-size: 0.8rem;
     opacity: 0.92;
     line-height: 1.45;
     margin-bottom: 16px;
@@ -265,7 +348,7 @@ body {
 
 /* Services Grid */
 .section-title {
-    font-size: 1.05rem;
+    font-size: 1.02rem;
     font-weight: 700;
     color: var(--text-primary);
     margin-bottom: 12px;
@@ -273,49 +356,86 @@ body {
 .services-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-    margin-bottom: 18px;
+    gap: 10px;
+    margin-bottom: 16px;
 }
 .service-card {
     background: var(--bg-card);
     border: 1px solid var(--border-card);
     border-radius: var(--radius-lg);
-    padding: 14px;
+    padding: 12px;
     box-shadow: var(--shadow-card);
     cursor: pointer;
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    transition: transform 0.15s ease;
 }
 .service-card:active {
     transform: scale(0.97);
 }
 .service-icon {
-    width: 44px;
-    height: 44px;
+    width: 42px;
+    height: 42px;
     border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.35rem;
-    margin-bottom: 10px;
+    font-size: 1.3rem;
+    margin-bottom: 8px;
 }
 .service-card h4 {
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     font-weight: 700;
     color: var(--text-primary);
-    margin-bottom: 3px;
+    margin-bottom: 2px;
 }
 .service-card p {
-    font-size: 0.72rem;
+    font-size: 0.7rem;
     color: var(--text-muted);
+}
+
+/* Current Lab Card Preview */
+.current-lab-card {
+    border-right: 4px solid #10B981;
+}
+.lab-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 8px;
+}
+.lab-card-title strong {
+    font-size: 0.95rem;
+    color: var(--text-primary);
+    display: block;
+}
+.lab-rating-pill {
+    background: #FEF3C7;
+    color: #92400E;
+    font-weight: 800;
+    font-size: 0.72rem;
+    padding: 3px 8px;
+    border-radius: var(--radius-full);
+}
+.lab-equipment-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin: 8px 0;
+}
+.lab-eq-tag {
+    background: #F1F5F9;
+    color: #475569;
+    font-size: 0.68rem;
+    padding: 2px 7px;
+    border-radius: 4px;
 }
 
 /* Buttons */
 .btn {
     border: none;
     outline: none;
-    padding: 10px 18px;
+    padding: 10px 16px;
     border-radius: var(--radius-md);
-    font-size: 0.88rem;
+    font-size: 0.85rem;
     font-weight: 700;
     cursor: pointer;
     display: inline-flex;
@@ -352,13 +472,13 @@ body {
     width: 100%;
 }
 .btn-lg {
-    padding: 14px;
-    font-size: 1rem;
+    padding: 13px;
+    font-size: 0.95rem;
     border-radius: var(--radius-lg);
 }
 .btn-sm {
-    padding: 6px 12px;
-    font-size: 0.75rem;
+    padding: 5px 10px;
+    font-size: 0.72rem;
     border-radius: var(--radius-md);
 }
 
@@ -372,8 +492,8 @@ body {
     gap: 8px;
     margin-bottom: 6px;
 }
-.card-header-line h3 {
-    font-size: 0.98rem;
+.card-header-line h3, .card-header-line h4 {
+    font-size: 0.95rem;
     font-weight: 700;
 }
 .search-input-group {
@@ -382,54 +502,36 @@ body {
     margin-top: 10px;
 }
 
-/* Info Badges */
-.info-card-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-bottom: 14px;
-}
-.info-badge-card {
-    background: rgba(255, 255, 255, 0.85);
-    border: 1px solid var(--border-card);
-    border-radius: var(--radius-md);
-    padding: 10px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-.badge-icon {
-    font-size: 1.4rem;
-}
-.info-badge-card strong {
-    display: block;
-    font-size: 0.78rem;
-    color: var(--text-primary);
-}
-.info-badge-card small {
-    font-size: 0.68rem;
-    color: var(--text-muted);
-}
-
-/* Location Card */
-.location-card {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-.loc-actions {
-    display: flex;
-    gap: 8px;
-}
-
 /* ==========================================================================
-   Form Components
+   Booking & Forms
    ========================================================================== */
+.lab-booking-banner {
+    background: #F0F9FF;
+    border: 1px dashed #0284C7;
+    border-radius: var(--radius-md);
+    padding: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+    cursor: pointer;
+}
+.form-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
 .form-section-title {
-    font-size: 0.95rem;
+    font-size: 0.92rem;
     font-weight: 700;
     color: var(--primary);
-    margin-bottom: 12px;
+}
+.auth-hint-tag {
+    font-size: 0.7rem;
+    color: #0066FF;
+    cursor: pointer;
+    text-decoration: underline;
 }
 .form-group {
     margin-bottom: 12px;
@@ -443,11 +545,11 @@ body {
 }
 .form-input {
     width: 100%;
-    padding: 10px 14px;
+    padding: 10px 12px;
     background: #fff;
     border: 1px solid var(--border-card);
     border-radius: var(--radius-md);
-    font-size: 0.88rem;
+    font-size: 0.85rem;
     color: var(--text-primary);
     outline: none;
     transition: border-color 0.2s;
@@ -466,7 +568,7 @@ body {
 .gender-selector {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 10px;
+    gap: 8px;
 }
 .radio-chip {
     display: flex;
@@ -477,11 +579,11 @@ body {
     border-radius: var(--radius-md);
     background: #fff;
     cursor: pointer;
-    font-size: 0.85rem;
+    font-size: 0.82rem;
     font-weight: 600;
 }
 .radio-chip input {
-    margin-left: 6px;
+    margin-left: 5px;
 }
 
 /* Analysis Selection Grid */
@@ -511,11 +613,11 @@ body {
 }
 .analysis-chip-info strong {
     display: block;
-    font-size: 0.85rem;
+    font-size: 0.82rem;
     color: var(--text-primary);
 }
 .analysis-chip-info small {
-    font-size: 0.72rem;
+    font-size: 0.7rem;
     color: var(--text-muted);
 }
 .analysis-chip-price {
@@ -532,7 +634,7 @@ body {
     background: var(--primary-light);
     border-radius: var(--radius-md);
     margin-top: 8px;
-    font-size: 0.88rem;
+    font-size: 0.85rem;
     color: var(--text-primary);
 }
 .price-summary-box strong {
@@ -656,17 +758,18 @@ body {
 .search-filter-card {
     padding: 12px;
 }
-.category-pills {
+.category-pills, .wilaya-filter-bar {
     display: flex;
     gap: 6px;
     overflow-x: auto;
     padding-top: 8px;
+    padding-bottom: 4px;
     scrollbar-width: none;
 }
-.category-pills::-webkit-scrollbar {
+.category-pills::-webkit-scrollbar, .wilaya-filter-bar::-webkit-scrollbar {
     display: none;
 }
-.cat-pill {
+.cat-pill, .wilaya-pill {
     white-space: nowrap;
     padding: 5px 12px;
     background: #fff;
@@ -677,18 +780,21 @@ body {
     color: var(--text-secondary);
     cursor: pointer;
 }
-.cat-pill.active {
+.cat-pill.active, .wilaya-pill.active {
     background: var(--primary);
     color: #fff;
     border-color: var(--primary);
 }
 
-.catalog-list {
+.catalog-list, .labs-list-container {
     display: flex;
     flex-direction: column;
     gap: 10px;
+    max-height: 60vh;
+    overflow-y: auto;
+    padding-right: 2px;
 }
-.catalog-item-card {
+.catalog-item-card, .lab-card-selectable {
     background: #fff;
     border: 1px solid var(--border-card);
     border-radius: var(--radius-md);
@@ -696,13 +802,18 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    transition: border-color 0.15s;
 }
-.cat-item-details strong {
+.lab-card-selectable.active-lab {
+    border-color: var(--primary);
+    background: #F0F7FF;
+}
+.cat-item-details strong, .lab-card-selectable strong {
     display: block;
     font-size: 0.88rem;
     color: var(--text-primary);
 }
-.cat-item-details small {
+.cat-item-details small, .lab-card-selectable small {
     display: block;
     font-size: 0.72rem;
     color: var(--text-muted);
@@ -770,28 +881,6 @@ body {
     color: #CBD5E1;
 }
 
-/* FAQ */
-.faq-card h4 {
-    margin-bottom: 10px;
-    font-size: 0.95rem;
-}
-.faq-item {
-    border-bottom: 1px solid #E2E8F0;
-    padding: 8px 0;
-}
-.faq-item summary {
-    font-size: 0.82rem;
-    font-weight: 600;
-    cursor: pointer;
-    color: var(--text-primary);
-}
-.faq-item p {
-    font-size: 0.75rem;
-    color: var(--text-secondary);
-    padding: 6px 0 2px 0;
-    line-height: 1.45;
-}
-
 /* ==========================================================================
    Bottom Navigation Bar
    ========================================================================== */
@@ -842,7 +931,7 @@ body {
 }
 
 /* ==========================================================================
-   Modals & Toast
+   Modals & Auth Tabs
    ========================================================================== */
 .modal-backdrop {
     position: fixed;
@@ -850,7 +939,7 @@ body {
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.55);
     backdrop-filter: blur(4px);
     z-index: 2000;
     display: none;
@@ -864,14 +953,17 @@ body {
 .modal-card {
     background: #fff;
     border-radius: var(--radius-xl);
-    max-width: 380px;
+    max-width: 400px;
     width: 100%;
     padding: 20px;
     box-shadow: var(--shadow-soft);
     animation: scaleIn 0.2s ease;
 }
+.modal-lg {
+    max-width: 460px;
+}
 @keyframes scaleIn {
-    from { transform: scale(0.9); opacity: 0; }
+    from { transform: scale(0.92); opacity: 0; }
     to { transform: scale(1); opacity: 1; }
 }
 .modal-header {
@@ -903,6 +995,31 @@ body {
     margin: 8px 0;
 }
 
+/* Auth Modal Tabs */
+.auth-tabs {
+    display: flex;
+    gap: 8px;
+    background: #F1F5F9;
+    padding: 4px;
+    border-radius: var(--radius-full);
+}
+.auth-tab-btn {
+    border: none;
+    background: transparent;
+    padding: 6px 14px;
+    border-radius: var(--radius-full);
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.auth-tab-btn.active {
+    background: #fff;
+    color: var(--primary);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
 .toast {
     position: fixed;
     bottom: 80px;
@@ -929,3 +1046,4 @@ body {
 .text-muted { color: var(--text-muted); }
 .text-sm { font-size: 0.75rem; }
 .input-action-row { display: flex; gap: 8px; margin-top: 6px; }
+.d-block { display: block; }
