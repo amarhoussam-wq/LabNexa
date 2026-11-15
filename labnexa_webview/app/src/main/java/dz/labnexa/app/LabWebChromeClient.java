@@ -1,11 +1,9 @@
 package dz.labnexa.app;
 
-import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.view.View;
 import android.webkit.JsResult;
 import android.webkit.ValueCallback;
@@ -34,15 +32,6 @@ public class LabWebChromeClient extends WebChromeClient implements DialogInterfa
     @Override
     public boolean onShowFileChooser(WebView view, ValueCallback<Uri[]> callback, FileChooserParams params) {
         activity.fileChooserCallback = callback;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            activity.requestPermissions(new String[]{
-                Manifest.permission.READ_MEDIA_IMAGES
-            }, MainActivity.STORAGE_PERM_RC);
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            activity.requestPermissions(new String[]{
-                Manifest.permission.READ_EXTERNAL_STORAGE
-            }, MainActivity.STORAGE_PERM_RC);
-        }
         Intent chooser = new Intent(Intent.ACTION_GET_CONTENT);
         chooser.addCategory(Intent.CATEGORY_OPENABLE);
         chooser.setType("*/*");
