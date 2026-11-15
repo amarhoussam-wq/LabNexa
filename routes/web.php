@@ -46,6 +46,14 @@ Route::get('/booking/success/{id}', function ($id) {
 Route::post('/message', [Labo_dzController::class, 'message'])->name('message');
 Route::get('/analysis-info', [Labo_dzController::class, 'analysisInfo'])->name('analysis.info');
 
+// ==========================================================================
+// 1.1 DEDICATED MOBILE APP SHELL (Instant OTA updates, Native Mobile UI)
+// ==========================================================================
+Route::get('/app', [\App\Http\Controllers\MobileAppController::class, 'index'])->name('mobile.app');
+Route::post('/app/track', [\App\Http\Controllers\MobileAppController::class, 'track'])->name('mobile.app.track');
+Route::post('/app/login', [\App\Http\Controllers\MobileAppController::class, 'inAppLogin'])->name('mobile.app.login');
+Route::post('/app/logout', [\App\Http\Controllers\MobileAppController::class, 'inAppLogout'])->name('mobile.app.logout');
+
 Route::get('/debug-admins', function() {
     return \App\Models\Administrator::all(['id', 'name', 'email']);
 });

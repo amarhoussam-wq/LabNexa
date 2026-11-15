@@ -27,8 +27,9 @@ public class MainActivity extends Activity implements DialogInterface.OnClickLis
     public static final String BASE_URL =
             "http://zsw8k8c4k8o4kw008skssgkc.194.34.232.105.sslip.io";
 
-    public static final String PATIENT_PORTAL = BASE_URL + "/access?tab=patient";
-    public static final String BOOKING_PAGE   = BASE_URL + "/#booking";
+    public static final String APP_URL        = BASE_URL + "/app";
+    public static final String PATIENT_PORTAL = BASE_URL + "/app";
+    public static final String BOOKING_PAGE   = BASE_URL + "/app#booking";
 
     public WebView webView;
     public ProgressBar progressBar;
@@ -47,11 +48,12 @@ public class MainActivity extends Activity implements DialogInterface.OnClickLis
 
         setupWebView();
 
-        String startUrl = PATIENT_PORTAL;
+        String startUrl = APP_URL;
         if (getIntent() != null && getIntent().getData() != null) {
             String host = getIntent().getData().getHost();
             if ("booking".equals(host)) startUrl = BOOKING_PAGE;
-            else if ("results".equals(host)) startUrl = PATIENT_PORTAL + "#results";
+            else if ("results".equals(host)) startUrl = APP_URL + "#results";
+            else if ("track".equals(host)) startUrl = APP_URL + "#track";
         }
         webView.loadUrl(startUrl);
     }
