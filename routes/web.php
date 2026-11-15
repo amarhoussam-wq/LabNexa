@@ -630,8 +630,10 @@ Route::get('/report/download/{id}', [\App\Http\Controllers\PdfController::class,
     ->name('patient.report.download');
 
 Route::middleware('auth:patient,administrator,doctor')->group(function () {
-    Route::get('/patient/eligibility-report/{id}', [\App\Http\Controllers\PdfController::class, 'generateReservationPdf'])
-        ->name('patient.report.eligibility');
+    Route::get('/patient/eligibility-report/{id}', function(\Illuminate\Http\Request $request, $id) {
+        $request->merge(['report_type' => 'eligibility']);
+        return app(\App\Http\Controllers\PdfController::class)->viewReservationReport($request, $id, 'confirmed');
+    })->name('patient.report.eligibility');
 });
 
 Route::get('/test-email-live', function () {

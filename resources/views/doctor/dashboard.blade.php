@@ -559,8 +559,8 @@
                                                 <i class="fas fa-file-pdf"></i> <span>{{ __('messages.view_result') }}</span>
                                             </a>
                                         @elseif($hasDbResults)
-                                            <a href="{{ route('reservation.pdf', ['id' => $res->id, 'type' => 'confirmed', 'report_type' => 'results']) }}" target="_blank" class="action-pill-btn emerald">
-                                                <i class="fas fa-microscope"></i> <span>PDF</span>
+                                            <a href="{{ route('report.view', ['id' => $res->id, 'type' => 'confirmed', 'report_type' => 'results']) }}" target="_blank" class="action-pill-btn emerald">
+                                                <i class="fas fa-microscope"></i> <span>{{ app()->getLocale() == 'ar' ? 'تقرير النتائج' : 'Résultats' }}</span>
                                             </a>
                                         @endif
                                     </div>

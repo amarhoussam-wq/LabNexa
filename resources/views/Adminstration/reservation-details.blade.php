@@ -108,8 +108,8 @@
                         <i class="fas fa-file-medical me-2"></i> {{ __('messages.fill_results') ?? 'Enter Lab Results' }}
                     </a>
 
-                    <a href="{{ route('reservation.pdf', $reservation->id) }}" target="_blank" class="btn btn-outline-secondary text-start mt-2">
-                        <i class="fas fa-file-pdf me-2"></i> {{ __('messages.download_preparation_pdf') ?? 'Print Preparation' }}
+                    <a href="{{ route('report.view', $reservation->id) }}" target="_blank" class="btn btn-outline-secondary text-start mt-2">
+                        <i class="fas fa-print me-2"></i> {{ __('messages.download_preparation_pdf') ?? 'Print Preparation' }}
                     </a>
 
                     <button data-bs-toggle="modal" data-bs-target="#mobileAccessModal" class="btn btn-outline-dark text-start mt-2">

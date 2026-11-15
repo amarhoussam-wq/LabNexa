@@ -313,11 +313,11 @@
                 <div class="col-lg-5 text-lg-end">
                     <div class="d-inline-flex flex-wrap gap-2 justify-content-lg-end">
                         @if($reservation && ($reservation->result_file_path || $hasDbResults))
-                            <a href="{{ $reservation->result_file_path ? route('patient.download', $reservation->id) : route('reservation.pdf', ['id' => $reservation->id, 'type' => 'confirmed']) }}" 
+                            <a href="{{ $reservation->result_file_path ? route('patient.download', $reservation->id) : route('report.view', ['id' => $reservation->id, 'type' => 'confirmed', 'report_type' => 'results']) }}" 
                                target="_blank"
                                class="btn-patient-cta emerald">
                                 <i class="fas fa-file-invoice"></i>
-                                <span>{{ __('messages.medical_results') }} (PDF)</span>
+                                <span>{{ __('messages.medical_results') }}</span>
                             </a>
                         @endif
 
@@ -428,8 +428,8 @@
                                     @endif
 
                                     @if($hasDbResults)
-                                        <a href="{{ route('reservation.pdf', ['id' => $reservation->id, 'type' => 'confirmed']) }}" target="_blank" class="btn-patient-cta primary">
-                                            <i class="fas fa-file-pdf"></i>
+                                        <a href="{{ route('report.view', ['id' => $reservation->id, 'type' => 'confirmed', 'report_type' => 'results']) }}" target="_blank" class="btn-patient-cta primary">
+                                            <i class="fas fa-file-medical"></i>
                                             <span>{{ __('messages.medical_report_pdf') }}</span>
                                         </a>
                                     @endif
