@@ -24,12 +24,13 @@ import android.widget.ProgressBar;
 
 public class MainActivity extends Activity implements DialogInterface.OnClickListener {
 
+    public static final String LOCAL_APP_URL = "file:///android_asset/www/index.html";
     public static final String BASE_URL =
             "http://zsw8k8c4k8o4kw008skssgkc.194.34.232.105.sslip.io";
 
-    public static final String APP_URL        = BASE_URL + "/app";
-    public static final String PATIENT_PORTAL = BASE_URL + "/app";
-    public static final String BOOKING_PAGE   = BASE_URL + "/app#booking";
+    public static final String APP_URL        = LOCAL_APP_URL;
+    public static final String PATIENT_PORTAL = LOCAL_APP_URL;
+    public static final String BOOKING_PAGE   = LOCAL_APP_URL;
 
     public WebView webView;
     public ProgressBar progressBar;
@@ -48,14 +49,7 @@ public class MainActivity extends Activity implements DialogInterface.OnClickLis
 
         setupWebView();
 
-        String startUrl = APP_URL;
-        if (getIntent() != null && getIntent().getData() != null) {
-            String host = getIntent().getData().getHost();
-            if ("booking".equals(host)) startUrl = BOOKING_PAGE;
-            else if ("results".equals(host)) startUrl = APP_URL + "#results";
-            else if ("track".equals(host)) startUrl = APP_URL + "#track";
-        }
-        webView.loadUrl(startUrl);
+        webView.loadUrl(LOCAL_APP_URL);
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -64,13 +58,15 @@ public class MainActivity extends Activity implements DialogInterface.OnClickLis
         s.setJavaScriptEnabled(true);
         s.setDomStorageEnabled(true);
         s.setAllowFileAccess(true);
+        s.setAllowFileAccessFromFileURLs(true);
+        s.setAllowUniversalAccessFromFileURLs(true);
         s.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
         s.setCacheMode(WebSettings.LOAD_DEFAULT);
         s.setLoadWithOverviewMode(true);
         s.setUseWideViewPort(true);
         s.setBuiltInZoomControls(false);
         s.setDisplayZoomControls(false);
-        s.setUserAgentString(s.getUserAgentString() + " LabNexaApp/1.2.0");
+        s.setUserAgentString(s.getUserAgentString() + " LabNexaApp/1.3.0");
 
         webView.setWebViewClient(new LabWebViewClient(this));
         webView.setWebChromeClient(new LabWebChromeClient(this));
