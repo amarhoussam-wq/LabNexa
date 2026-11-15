@@ -61,19 +61,38 @@ public class LabWebViewClient extends WebViewClient {
     @Override
     public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest req) {
         String url = req.getUrl().toString();
+
+        // ✅ كل روابط التطبيق تبقى داخل WebView
         if (url.startsWith(MainActivity.BASE_URL)) {
-            return false;
-        }
-        if (url.startsWith("http://") || url.startsWith("https://")) {
-            activity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+            view.loadUrl(url);
             return true;
         }
+
+        // ✅ روابط labnexa:// الداخلية تبقى داخل WebView
+        if (url.startsWith("labnexa://")) {
+            view.loadUrl(MainActivity.APP_URL);
+            return true;
+        }
+
+        // ✅ روابط about: و data: تبقى داخل WebView
+        if (url.startsWith("about:") || url.startsWith("data:") || url.startsWith("javascript:")) {
+            return false;
+        }
+
+        // ✅ روابط الهاتف والبريد وواتساب تُفتح بالتطبيق المناسب
         if (url.startsWith("tel:") || url.startsWith("mailto:") || url.startsWith("whatsapp:")) {
             try {
                 activity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
             } catch (Exception ignored) {}
             return true;
         }
+
+        // ✅ أي رابط HTTP/HTTPS خارجي: نُحمّله داخل WebView أيضاً (لا متصفح)
+        if (url.startsWith("http://") || url.startsWith("https://")) {
+            view.loadUrl(url);
+            return true;
+        }
+
         return false;
     }
 }
